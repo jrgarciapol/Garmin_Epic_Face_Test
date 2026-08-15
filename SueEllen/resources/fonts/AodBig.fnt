@@ -1,0 +1,15 @@
+info face="AodBig" size=208 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=406 base=277 scaleW=480 scaleH=340 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="AodBig.png"
+chars count=11
+char id=48  x=0    y=0    width=69   height=147  xoffset=8    yoffset=137  xadvance=86   page=0 chnl=15
+char id=49  x=71   y=0    width=18   height=153  xoffset=34   yoffset=129  xadvance=86   page=0 chnl=15
+char id=50  x=91   y=0    width=60   height=140  xoffset=13   yoffset=140  xadvance=86   page=0 chnl=15
+char id=51  x=153  y=0    width=56   height=150  xoffset=15   yoffset=130  xadvance=86   page=0 chnl=15
+char id=52  x=211  y=0    width=55   height=167  xoffset=15   yoffset=121  xadvance=86   page=0 chnl=15
+char id=53  x=268  y=0    width=53   height=172  xoffset=16   yoffset=111  xadvance=86   page=0 chnl=15
+char id=54  x=323  y=0    width=62   height=167  xoffset=12   yoffset=113  xadvance=86   page=0 chnl=15
+char id=55  x=387  y=0    width=46   height=159  xoffset=20   yoffset=121  xadvance=86   page=0 chnl=15
+char id=56  x=0    y=174  width=56   height=154  xoffset=15   yoffset=124  xadvance=86   page=0 chnl=15
+char id=57  x=58   y=174  width=58   height=164  xoffset=14   yoffset=119  xadvance=86   page=0 chnl=15
+char id=58  x=118  y=174  width=15   height=39   xoffset=8    yoffset=194  xadvance=28   page=0 chnl=15

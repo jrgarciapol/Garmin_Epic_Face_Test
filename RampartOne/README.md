@@ -1,0 +1,1 @@
+# Epix Rampart — Esfera para Garmin Epix Pro 51 mm (Gen 2)
