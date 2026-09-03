@@ -1,6 +1,6 @@
 # Garmin Epic Face — Banco de pruebas
 
-Este repositorio contiene **14 variantes** de la esfera *Epix Digital* para el
+Este repositorio contiene **15 variantes** de la esfera *Epix Digital* para el
 **Garmin Epix Pro 51 mm (Gen 2)**. Cada subcarpeta es un **proyecto Connect IQ
 completo e independiente**, con su **id de app propio**, así que puedes
 instalarlas todas a la vez en el reloj.
@@ -92,6 +92,21 @@ concéntricos en el disco y una sombra desplazada 2-3 px.
 Su **Always-On invierte la esfera**: el fondo ámbar encendería el 100% de la
 pantalla y el techo es el 10%, así que en reposo pasa a fondo negro con las
 agujas en ámbar (4,78% de píxeles). Detalle en `Disco/README.md`.
+
+## Variante en palabras
+
+| Carpeta | Estilo | App |
+|---|---|---|
+| `Letras/` | La hora escrita en castellano, Barriecito sobre negro | Epix Letras |
+
+Dice la hora como la diría una persona: `2:45` es **TRES / MENOS / CUARTO** y
+`6:30` es **SEIS / Y / MEDIA**. Redondea a 5 minutos, va sin artículo y el
+«menos» salta a la hora siguiente, así que a las 9:35 pone DIEZ.
+
+Paleta **hueso y ámbar** sobre negro puro: la hora en hueso, el enlace en ámbar
+apagado (es gramática, debe ceder) y los minutos en ámbar vivo. VEINTICINCO se
+parte en dos líneas porque es casi el doble de larga que el resto. Su Always-On
+usa un cuerpo reducido y mide 6,39% de píxeles. Detalle en `Letras/README.md`.
 
 ## Cómo compilar una
 
