@@ -1,6 +1,6 @@
 # Garmin Epic Face — Banco de pruebas
 
-Este repositorio contiene **12 variantes** de la esfera *Epix Digital* para el
+Este repositorio contiene **13 variantes** de la esfera *Epix Digital* para el
 **Garmin Epix Pro 51 mm (Gen 2)**. Cada subcarpeta es un **proyecto Connect IQ
 completo e independiente**, con su **id de app propio**, así que puedes
 instalarlas todas a la vez en el reloj.
@@ -45,6 +45,7 @@ entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
 |---|---|---|
 | `Orbita/` | Barriecito + orbe que recorre el borde del dial | Epix Orbita |
 | `Pulso/`  | Barriecito + dos orbes que giran al ritmo del corazón | Epix Pulso |
+| `PulsoXL/`| Igual que Pulso, pero los orbes **engordan** con el pulso | Epix Pulso XL |
 
 El orbe avanza **6° por segundo** (una vuelta por minuto) dejando una estela de
 5 puntos, y su **tono recorre el espectro** en cada vuelta. Se dibuja antes que
@@ -66,6 +67,11 @@ Al encontrarse estalla un orbe de **anillos de arcoíris cuyo tamaño crece con
 las pulsaciones**, sin tope: a 60 ppm es un destello discreto y a 160 ppm invade
 la esfera y tapa la hora unos segundos, a propósito, para que no pase
 desapercibido. Después colapsa y los orbes renacen con los sentidos invertidos.
+
+En **`PulsoXL/`** todo eso es igual, pero además el **radio del orbe** crece con
+las pulsaciones: 9 px en reposo, 29 px a 160 ppm. La estela, que se mide en
+múltiplos de ese radio, pasa de hilo fino a brochazo.
+
 Lee el pulso con el permiso `SensorHistory` (el permiso `Sensor` **no es válido
 en una esfera**: solo lo admiten apps y widgets). Primero intenta el pulso en
 vivo y, si el reloj no está midiendo, coge la última muestra del histórico; si
