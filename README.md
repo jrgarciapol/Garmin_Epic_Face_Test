@@ -1,6 +1,6 @@
 # Garmin Epic Face — Banco de pruebas
 
-Este repositorio contiene **10 variantes** de la esfera *Epix Digital* para el
+Este repositorio contiene **11 variantes** de la esfera *Epix Digital* para el
 **Garmin Epix Pro 51 mm (Gen 2)**. Cada subcarpeta es un **proyecto Connect IQ
 completo e independiente**, con su **id de app propio**, así que puedes
 instalarlas todas a la vez en el reloj.
@@ -32,6 +32,21 @@ minuto, arco de progreso del minuto, hora grande en **Barriecito** y línea
 |---|---|---|
 | `Rosa/`      | 3d — paleta apagada (norte en verde) | Epix Rosa |
 | `RosaVivid/` | 3e — saturada (verde/rojo puros, textos con contorno) | Epix Rosa Vivid |
+
+## Variante con movimiento
+
+| Carpeta | Estilo | App |
+|---|---|---|
+| `Orbita/` | Barriecito + orbe que recorre el borde del dial | Epix Orbita |
+
+El orbe avanza **6° por segundo** (una vuelta por minuto) dejando una estela de
+5 puntos, y su **tono recorre el espectro** en cada vuelta. Se dibuja antes que
+los textos, así que pasa **por detrás** de la hora. Los tamaños de la esfera
+Barriecito (196 / 108 / 92) se mantienen intactos.
+
+Solo se anima con la pantalla despierta: una esfera Garmin se redibuja una vez
+por segundo en alto consumo y solo una vez por minuto en reposo. En Always-On
+no se dibuja el orbe.
 
 La rosa intenta orientarse con el rumbo (`Position.getInfo().heading`, permiso
 `Positioning`). Ojo: una esfera Garmin **no recibe brújula continua**, así que
