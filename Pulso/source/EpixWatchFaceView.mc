@@ -165,12 +165,31 @@ class EpixWatchFaceView extends Ui.WatchFace {
                     formatTime(now.hour, now.min), mAodFont, mAodColor);
     }
 
-    //! Pulsaciones actuales. Si el sensor no da dato (muñeca suelta, reloj
-    //! recién puesto), caemos a 60 para que la animación siga viva.
+    //! Pulsaciones actuales, en dos intentos:
+    //!   1. Pulso en vivo: solo hay dato si el reloj está midiendo en ese
+    //!      momento (actividad en curso o medición continua encendida).
+    //!   2. Última muestra del histórico del sensor (permiso SensorHistory).
+    //!      Es la vía buena para una esfera: el permiso 'Sensor' NO es válido
+    //!      para type="watchface", el compilador lo rechaza.
+    //! Si no hay ninguna de las dos (muñeca suelta, reloj recién puesto),
+    //! caemos a 60 para que la animación siga viva.
     private function heartRate() {
         var info = Activity.getActivityInfo();
         if (info != null && info.currentHeartRate != null) {
             return info.currentHeartRate;
+        }
+        if ((Toybox has :SensorHistory) &&
+            (Toybox.SensorHistory has :getHeartRateHistory)) {
+            var it = Toybox.SensorHistory.getHeartRateHistory({
+                :period => 1,
+                :order => Toybox.SensorHistory.ORDER_NEWEST_FIRST
+            });
+            if (it != null) {
+                var sample = it.next();
+                if (sample != null && sample.data != null) {
+                    return sample.data;
+                }
+            }
         }
         return 60;
     }

@@ -66,7 +66,10 @@ Al encontrarse estalla un orbe de **anillos de arcoíris cuyo tamaño crece con
 las pulsaciones**, sin tope: a 60 ppm es un destello discreto y a 160 ppm invade
 la esfera y tapa la hora unos segundos, a propósito, para que no pase
 desapercibido. Después colapsa y los orbes renacen con los sentidos invertidos.
-Necesita el permiso `Sensor` para leer el pulso; si no hay dato, usa 60 ppm.
+Lee el pulso con el permiso `SensorHistory` (el permiso `Sensor` **no es válido
+en una esfera**: solo lo admiten apps y widgets). Primero intenta el pulso en
+vivo y, si el reloj no está midiendo, coge la última muestra del histórico; si
+tampoco la hay, usa 60 ppm.
 
 ## Cómo compilar una
 

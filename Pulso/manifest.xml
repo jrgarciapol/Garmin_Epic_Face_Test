@@ -17,9 +17,13 @@
             <iq:product id="epix2pro51mm"/>
         </iq:products>
 
-        <!-- No se necesitan permisos: la esfera solo usa hora, fecha y batería. -->
+        <!--
+            Una esfera NO puede pedir el permiso 'Sensor' (solo lo admiten las
+            apps y widgets, o una esfera con 'Background'). Para el pulso usamos
+            el histórico del sensor, que sí es válido para type="watchface".
+        -->
         <iq:permissions>
-            <iq:uses-permission id="Sensor"/>
+            <iq:uses-permission id="SensorHistory"/>
         </iq:permissions>
 
         <!-- Idiomas soportados. -->
