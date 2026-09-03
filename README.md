@@ -33,6 +33,12 @@ minuto, arco de progreso del minuto, hora grande en **Barriecito** y línea
 | `Rosa/`      | 3d — paleta apagada (norte en verde) | Epix Rosa |
 | `RosaVivid/` | 3e — saturada (verde/rojo puros, textos con contorno) | Epix Rosa Vivid |
 
+La rosa intenta orientarse con el rumbo (`Position.getInfo().heading`, permiso
+`Positioning`). Ojo: una esfera Garmin **no recibe brújula continua**, así que
+lo normal es que se quede **fija al norte** salvo que haya un rumbo GPS
+reciente. Su **Always-On** no dibuja la rosa: solo la hora reducida, rotando
+entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
+
 ## Variante con movimiento
 
 | Carpeta | Estilo | App |
@@ -47,12 +53,6 @@ Barriecito (196 / 108 / 92) se mantienen intactos.
 Solo se anima con la pantalla despierta: una esfera Garmin se redibuja una vez
 por segundo en alto consumo y solo una vez por minuto en reposo. En Always-On
 no se dibuja el orbe.
-
-La rosa intenta orientarse con el rumbo (`Position.getInfo().heading`, permiso
-`Positioning`). Ojo: una esfera Garmin **no recibe brújula continua**, así que
-lo normal es que se quede **fija al norte** salvo que haya un rumbo GPS
-reciente. Su **Always-On** no dibuja la rosa: solo la hora reducida, rotando
-entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
 
 ## Cómo compilar una
 
