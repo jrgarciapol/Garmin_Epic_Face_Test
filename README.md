@@ -1,6 +1,6 @@
 # Garmin Epic Face — Banco de pruebas
 
-Este repositorio contiene **13 variantes** de la esfera *Epix Digital* para el
+Este repositorio contiene **14 variantes** de la esfera *Epix Digital* para el
 **Garmin Epix Pro 51 mm (Gen 2)**. Cada subcarpeta es un **proyecto Connect IQ
 completo e independiente**, con su **id de app propio**, así que puedes
 instalarlas todas a la vez en el reloj.
@@ -76,6 +76,22 @@ Lee el pulso con el permiso `SensorHistory` (el permiso `Sensor` **no es válido
 en una esfera**: solo lo admiten apps y widgets). Primero intenta el pulso en
 vivo y, si el reloj no está midiendo, coge la última muestra del histórico; si
 tampoco la hay, usa 60 ppm.
+
+## Variante analógica
+
+| Carpeta | Estilo | App |
+|---|---|---|
+| `Disco/` | Analógica minimalista, fondo ámbar, sin cifras | Epix Disco |
+
+Adaptación de un reloj de disco: dos agujas afiladas, doce marcas y un disco
+central. La única esfera del banco que **no usa ninguna fuente** — todo son
+polígonos y círculos. Monkey C no tiene degradados ni sombras difuminadas, así
+que el volumen se finge con un bisel más claro en media aguja, anillos
+concéntricos en el disco y una sombra desplazada 2-3 px.
+
+Su **Always-On invierte la esfera**: el fondo ámbar encendería el 100% de la
+pantalla y el techo es el 10%, así que en reposo pasa a fondo negro con las
+agujas en ámbar (1,59% de píxeles). Detalle en `Disco/README.md`.
 
 ## Cómo compilar una
 
