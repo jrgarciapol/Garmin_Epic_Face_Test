@@ -17,18 +17,19 @@ S = 454
 
 # Paleta "hueso y ambar", igual que el .mc
 C_HOUR = (0xF3, 0xE7, 0xD3)
-C_LINK = (0x6E, 0x56, 0x2C)
+C_LINK = (0xFF, 0xB0, 0x20)
 C_MIN = (0xFF, 0xB0, 0x20)
 
 Y3 = (0.240, 0.500, 0.760)
 Y4 = (0.175, 0.385, 0.605, 0.825)
-YA = (0.270, 0.500, 0.730)
+YA3 = (0.255, 0.500, 0.745)
+YA4 = (0.175, 0.385, 0.605, 0.825)
 
 F_WORD = ImageFont.truetype(TTF, 116)
 F_WORDS = ImageFont.truetype(TTF, 100)
-F_LINK = ImageFont.truetype(TTF, 64)
-F_WORDA = ImageFont.truetype(TTF, 64)
-F_LINKA = ImageFont.truetype(TTF, 38)
+F_LINK = ImageFont.truetype(TTF, 100)
+F_WORDA = ImageFont.truetype(TTF, 72)
+F_LINKA = ImageFont.truetype(TTF, 50)
 
 HORAS = ["DOCE", "UNA", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE",
          "OCHO", "NUEVE", "DIEZ", "ONCE"]
@@ -68,8 +69,13 @@ def face(hh, mm, aod=False):
     if aod:
         cx = S // 2 + ((mm % 3) - 1) * 7
         dy = (((mm // 3) % 3) - 1) * 7
-        rows = [(h, F_WORDA, YA[0], C_HOUR), (lk, F_LINKA, YA[1], C_LINK),
-                (mi, F_WORDA, YA[2], C_MIN)]
+        if mi == "VEINTICINCO":
+            rows = [(h, F_WORDA, YA4[0], C_HOUR), (lk, F_LINKA, YA4[1], C_LINK),
+                    ("VEINTI", F_WORDA, YA4[2], C_MIN),
+                    ("CINCO", F_WORDA, YA4[3], C_MIN)]
+        else:
+            rows = [(h, F_WORDA, YA3[0], C_HOUR), (lk, F_LINKA, YA3[1], C_LINK),
+                    (mi, F_WORDA, YA3[2], C_MIN)]
         for txt, f, y, col in rows:
             d.text((cx, int(S * y) + dy), txt, font=f, fill=col, anchor="mm")
     elif mi == "VEINTICINCO":
@@ -122,14 +128,16 @@ strip([(bezel(face(h, m)), "%d:%02d" % (h, m)) for h, m in CASOS], OUT, rows=2)
 strip([(bezel(face(h, m, aod=True)), "AOD %d:%02d" % (h, m))
        for h, m in ((9, 35), (2, 45), (12, 0))], OUT_AOD, scale=0.52)
 
-# Presupuesto del 10% de pixeles encendidos en Always-On, caso peor
-peor = 0
-for h in range(24):
-    for m in range(60):
+# Presupuesto del 10% de pixeles encendidos en Always-On.
+# Hay que barrer LAS DOCE HORAS: la palabra de la hora cambia mucho de tinta
+# (DOS pinta la mitad que CUATRO), asi que mirar solo una hora enganaria.
+peor, cual = 0, None
+for h in range(12):
+    for m in (0, 15, 25, 30, 35, 45, 55):
         g = face(h, m, aod=True).convert("L")
         n = sum(1 for p in g.get_flattened_data() if p > 8)
-        peor = max(peor, n)
-    if h > 1:
-        break
+        if n > peor:
+            peor, cual = n, (h, m)
 print("preview:", OUT, "|", OUT_AOD)
-print("AOD peor caso: %d px = %.2f%% de %d" % (peor, 100.0 * peor / (S * S), S * S))
+print("AOD peor caso (%d:%02d): %d px = %.2f%% de %d"
+      % (cual[0], cual[1], peor, 100.0 * peor / (S * S), S * S))

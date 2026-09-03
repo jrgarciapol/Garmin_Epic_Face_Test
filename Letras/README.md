@@ -28,11 +28,17 @@ Son la parte delicada, más que el código:
 Pensada para AMOLED: **negro puro** de fondo (píxel apagado, contraste infinito
 y cero consumo) y toda la tinta en tres niveles del mismo eje cálido.
 
-| | Color | Por qué |
-|---|---|---|
-| Hora | `0xF3E7D3` hueso | Lo primero que se lee |
-| Enlace | `0x6E562C` ámbar apagado | Es gramática, no información: debe ceder |
-| Minutos | `0xFFB020` ámbar vivo | El dato que cambia |
+| | Color | Cuerpo | Por qué |
+|---|---|---|---|
+| Hora | `0xF3E7D3` hueso | 116 | Lo primero que se lee |
+| Enlace | `0xFFB020` ámbar vivo | 100 | «Y» frente a «MENOS» son **media hora** |
+| Minutos | `0xFFB020` ámbar vivo | 116 | El dato que cambia |
+
+El enlace empezó siendo ámbar apagado y pequeño, tratándolo como gramática de
+relleno. Es un error: «Y» frente a «MENOS» cambia la hora en treinta minutos, o
+sea que es la palabra **más informativa** de las tres. Ahora va en el mismo
+ámbar vivo que los minutos y casi igual de grande, así que «Y CUARTO» se lee
+como un bloque, que es como se dice.
 
 ## VEINTICINCO
 
@@ -51,17 +57,23 @@ un atlas BMFont propio. Por eso hay cinco y solo cinco, generados por
 |---|---|---|
 | `Word`  | 116 | Las dos líneas grandes cuando la frase cabe en tres |
 | `WordS` | 100 | Las tres líneas grandes cuando VEINTICINCO obliga a cuatro |
-| `Link`  | 64  | La línea del enlace (Y / MENOS / EN) |
-| `WordA` | 64  | Always-On |
-| `LinkA` | 38  | Always-On, enlace |
+| `Link`  | 100 | La línea del enlace (Y / MENOS / EN) |
+| `WordA` | 72  | Always-On |
+| `LinkA` | 50  | Always-On, enlace |
 
 Solo hacen falta **17 letras** (`ACDEHIMNOPRSTUVYZ`), las que aparecen en las
 veinte palabras del sistema, así que los atlas son diminutos.
 
 ## Always-On
 
-Las palabras son mucha tinta, así que en reposo se usa el cuerpo reducido. El
-caso peor (DIEZ MENOS VEINTICINCO) mide **6,39%** de píxeles encendidos, por
-debajo del techo del 10%. A ese tamaño la palabra larga ya cabe entera y no
-hace falta partirla. El bloque se desplaza unos píxeles cada minuto para
-repartir el desgaste del AMOLED.
+Llevado al máximo que permite el techo del **10%** de píxeles encendidos: el
+caso peor es `3:35` (CUATRO MENOS VEINTI CINCO) y mide **9,05%**.
+
+Para poder subir el cuerpo hasta ahí, en reposo **también se parte
+VEINTICINCO**: con la palabra entera el ancho manda y hay que quedarse mucho
+más pequeño. El bloque se desplaza unos píxeles cada minuto para repartir el
+desgaste del AMOLED.
+
+Al medir el presupuesto hay que **barrer las doce horas**, no una sola: DOS
+pinta la mitad de tinta que CUATRO, así que quedarse en la primera hora del día
+da un número optimista y falso.

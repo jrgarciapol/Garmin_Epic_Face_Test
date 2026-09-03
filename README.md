@@ -103,10 +103,12 @@ Dice la hora como la diría una persona: `2:45` es **TRES / MENOS / CUARTO** y
 `6:30` es **SEIS / Y / MEDIA**. Redondea a 5 minutos, va sin artículo y el
 «menos» salta a la hora siguiente, así que a las 9:35 pone DIEZ.
 
-Paleta **hueso y ámbar** sobre negro puro: la hora en hueso, el enlace en ámbar
-apagado (es gramática, debe ceder) y los minutos en ámbar vivo. VEINTICINCO se
-parte en dos líneas porque es casi el doble de larga que el resto. Su Always-On
-usa un cuerpo reducido y mide 6,39% de píxeles. Detalle en `Letras/README.md`.
+Paleta **hueso y ámbar** sobre negro puro: la hora en hueso, y el enlace y los
+minutos en ámbar vivo, para que «Y CUARTO» se lea como un bloque — «y» frente a
+«menos» son media hora de diferencia, así que el enlace no puede ceder.
+VEINTICINCO se parte en dos líneas porque es casi el doble de larga que el
+resto. Su Always-On va al máximo que permite el techo del 10% de píxeles: 9,05%
+en el caso peor. Detalle en `Letras/README.md`.
 
 ## Cómo compilar una
 

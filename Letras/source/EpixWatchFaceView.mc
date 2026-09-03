@@ -34,11 +34,14 @@ class EpixWatchFaceView extends Ui.WatchFace {
 
     // ---- Paleta "hueso y ámbar" ----
     // Pensada para AMOLED: negro puro de fondo (píxel apagado, contraste
-    // infinito, cero consumo) y toda la tinta en tres niveles del mismo eje
-    // cálido. El enlace va apagado a propósito: es gramática, no información.
+    // infinito, cero consumo) y la tinta en el mismo eje cálido.
+    // El enlace iba apagado, tratándolo como gramática de relleno. Error: "Y"
+    // frente a "MENOS" son MEDIA HORA de diferencia, así que es la palabra más
+    // informativa de las tres. Ahora va en el mismo ámbar vivo que los minutos
+    // y casi igual de grande, de modo que "Y CUARTO" se lee como un bloque.
     private const COLOR_BG   = Gfx.COLOR_BLACK;
     private const COLOR_HOUR = 0xF3E7D3; // hueso
-    private const COLOR_LINK = 0x6E562C; // ámbar apagado
+    private const COLOR_LINK = 0xFFB020; // ámbar vivo
     private const COLOR_MIN  = 0xFFB020; // ámbar vivo
 
     // ---- Reparto vertical, en fracción de la altura ----
@@ -51,17 +54,23 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const Y4_MIN1 = 0.605;
     private const Y4_MIN2 = 0.825;
 
-    // Always-On: mismo reparto de 3 líneas, cuerpo más pequeño.
-    private const YA_HOUR = 0.270;
-    private const YA_LINK = 0.500;
-    private const YA_MIN  = 0.730;
+    // Always-On: el mismo reparto, con el cuerpo llevado al máximo que permite
+    // el presupuesto de píxeles (ver drawAod).
+    private const YA3_HOUR = 0.255;
+    private const YA3_LINK = 0.500;
+    private const YA3_MIN  = 0.745;
+
+    private const YA4_HOUR = 0.175;
+    private const YA4_LINK = 0.385;
+    private const YA4_MIN1 = 0.605;
+    private const YA4_MIN2 = 0.825;
 
     // Fuentes (Connect IQ no escala en ejecución: un cuerpo, un atlas).
     private var mWord;    // 116 — líneas grandes con 3 líneas
     private var mWordS;   // 100 — líneas grandes con 4 líneas
-    private var mLink;    // 64
-    private var mWordA;   // 64  — Always-On
-    private var mLinkA;   // 38
+    private var mLink;    // 100 — enlace
+    private var mWordA;   // 72  — Always-On
+    private var mLinkA;   // 50  — Always-On, enlace
 
     function initialize() {
         WatchFace.initialize();
@@ -113,10 +122,12 @@ class EpixWatchFaceView extends Ui.WatchFace {
     }
 
     //! ---- Presentación ALWAYS-ON ----
-    //! Cuerpo reducido para caber bajo el 10% de píxeles encendidos (medido:
-    //! 6,6% en el caso peor, DIEZ MENOS VEINTICINCO). A este tamaño la palabra
-    //! larga ya cabe entera, así que aquí no hace falta partirla. El bloque se
-    //! desplaza unos píxeles cada minuto para repartir el desgaste del AMOLED.
+    //! Llevado al máximo que permite el techo del 10% de píxeles encendidos:
+    //! el caso peor (DIEZ MENOS VEINTI CINCO) mide 9,07%. Para poder subir el
+    //! cuerpo hasta ahí, aquí también se parte VEINTICINCO en dos líneas; con
+    //! la palabra entera habría que quedarse bastante más pequeño.
+    //! El bloque se desplaza unos píxeles cada minuto para repartir el
+    //! desgaste del AMOLED.
     private function drawAod(dc, now) {
         var w = dc.getWidth();
         var h = dc.getHeight();
@@ -126,12 +137,20 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var dy = (((now.min / 3) % 3) - 1) * shift;
 
         var m = roundedMinute(now.min);
-        drawAt(dc, cx, (h * YA_HOUR).toNumber() + dy, hourName(now.hour, m),
-               mWordA, COLOR_HOUR);
-        drawAt(dc, cx, (h * YA_LINK).toNumber() + dy, linkWord(m),
-               mLinkA, COLOR_LINK);
-        drawAt(dc, cx, (h * YA_MIN).toNumber() + dy, minuteName(m),
-               mWordA, COLOR_MIN);
+        var hourWord = hourName(now.hour, m);
+        var link = linkWord(m);
+        var mins = minuteName(m);
+
+        if (mins.equals("VEINTICINCO")) {
+            drawAt(dc, cx, (h * YA4_HOUR).toNumber() + dy, hourWord, mWordA, COLOR_HOUR);
+            drawAt(dc, cx, (h * YA4_LINK).toNumber() + dy, link,     mLinkA, COLOR_LINK);
+            drawAt(dc, cx, (h * YA4_MIN1).toNumber() + dy, "VEINTI", mWordA, COLOR_MIN);
+            drawAt(dc, cx, (h * YA4_MIN2).toNumber() + dy, "CINCO",  mWordA, COLOR_MIN);
+        } else {
+            drawAt(dc, cx, (h * YA3_HOUR).toNumber() + dy, hourWord, mWordA, COLOR_HOUR);
+            drawAt(dc, cx, (h * YA3_LINK).toNumber() + dy, link,     mLinkA, COLOR_LINK);
+            drawAt(dc, cx, (h * YA3_MIN).toNumber() + dy,  mins,     mWordA, COLOR_MIN);
+        }
     }
 
     private function line(dc, cx, h, yf, txt, font, color) {
