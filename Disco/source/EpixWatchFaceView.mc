@@ -58,6 +58,17 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const W_HOUR_BODY = 13;
     private const K_SH_HOUR   = 0.60;
 
+    // ---- Marcas horarias ----
+    // El grosor va emparejado con el de las agujas: al ensanchar el cuerpo de
+    // la aguja, las marcas finas se quedaban atrás y el dial se descompensaba.
+    private const TICK_W_Q     = 11;    // 12, 3, 6 y 9
+    private const TICK_W       = 7;     // las otras ocho
+    private const TICK_W_Q_AOD = 7;     // las mismas, en reposo
+    private const TICK_W_AOD   = 4;
+    private const TICK_R_IN_Q  = 0.855; // las de los cuartos, más largas
+    private const TICK_R_IN    = 0.905;
+    private const TICK_R_OUT   = 0.955; // todas acaban a la misma altura
+
     function initialize() {
         WatchFace.initialize();
     }
@@ -90,7 +101,7 @@ class EpixWatchFaceView extends Ui.WatchFace {
         dc.setColor(COLOR_BG, COLOR_BG);
         dc.clear();
 
-        drawTicks(dc, cx, cy, COLOR_TICK, 5, 3);
+        drawTicks(dc, cx, cy, COLOR_TICK, TICK_W_Q, TICK_W);
         drawDisc(dc, cx, cy);
 
         var ha = hourAngle(now);
@@ -122,7 +133,7 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var cx = dc.getWidth() / 2 + ((now.min % 3) - 1) * shift;
         var cy = dc.getHeight() / 2 + (((now.min / 3) % 3) - 1) * shift;
 
-        drawTicks(dc, cx, cy, COLOR_AOD_T, 3, 2);
+        drawTicks(dc, cx, cy, COLOR_AOD_T, TICK_W_Q_AOD, TICK_W_AOD);
 
         var ha = hourAngle(now);
         var ma = minuteAngle(now);
@@ -143,18 +154,21 @@ class EpixWatchFaceView extends Ui.WatchFace {
         return (now.min + now.sec / 60.0) * 6.0;
     }
 
-    //! Doce marcas horarias pegadas al borde; las de las horas en punto (12,
-    //! 3, 6 y 9) más gruesas.
+    //! Doce marcas horarias pegadas al borde. Las de 12, 3, 6 y 9 son más
+    //! gruesas Y más largas, para que sirvan de referencia de un vistazo.
+    //! El grosor va en proporción al de las agujas: si engordas unas, engorda
+    //! las otras o el dial se descompensa.
     private function drawTicks(dc, cx, cy, color, wQuarter, wOther) {
         var r = dc.getWidth() / 2;
-        var r1 = r * 0.90;
-        var r2 = r * 0.955;
+        var r2 = r * TICK_R_OUT;
         dc.setColor(color, Gfx.COLOR_TRANSPARENT);
         for (var i = 0; i < 12; i += 1) {
             var a = Math.toRadians(i * 30 - 90);
             var ca = Math.cos(a);
             var sa = Math.sin(a);
-            dc.setPenWidth((i % 3 == 0) ? wQuarter : wOther);
+            var quarter = (i % 3 == 0);
+            var r1 = r * (quarter ? TICK_R_IN_Q : TICK_R_IN);
+            dc.setPenWidth(quarter ? wQuarter : wOther);
             dc.drawLine((cx + r1 * ca).toNumber(), (cy + r1 * sa).toNumber(),
                         (cx + r2 * ca).toNumber(), (cy + r2 * sa).toNumber());
         }

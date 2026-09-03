@@ -30,6 +30,9 @@ W_MIN_TAIL, W_MIN_BODY, K_SH_MIN = 13, 10, 0.66
 W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR = 16, 13, 0.60
 SPEC_MIN = (W_MIN_TAIL, W_MIN_BODY, K_SH_MIN)
 SPEC_HOUR = (W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR)
+TICK_W_Q, TICK_W = 11, 7
+TICK_W_Q_AOD, TICK_W_AOD = 7, 4
+TICK_R_IN_Q, TICK_R_IN, TICK_R_OUT = 0.855, 0.905, 0.955
 R_DISC, R_PIVOT = 27, 5
 SHADE_X, SHADE_Y = 2, 3
 
@@ -60,12 +63,14 @@ def draw_hand(d, cx, cy, deg, length, spec):
 
 def draw_ticks(d, cx, cy, color, w_quarter, w_other):
     r = S * K / 2
-    r1, r2 = r * 0.90, r * 0.955
+    r2 = r * TICK_R_OUT
     for i in range(12):
         a = math.radians(i * 30 - 90)
         ca, sa = math.cos(a), math.sin(a)
+        quarter = (i % 3 == 0)
+        r1 = r * (TICK_R_IN_Q if quarter else TICK_R_IN)
         d.line([(cx + r1 * ca, cy + r1 * sa), (cx + r2 * ca, cy + r2 * sa)],
-               fill=color, width=(w_quarter if i % 3 == 0 else w_other) * K)
+               fill=color, width=(w_quarter if quarter else w_other) * K)
 
 
 def draw_disc(d, cx, cy):
@@ -90,12 +95,12 @@ def face(hh, mm, aod=False):
     if aod:
         cx = c + ((mm % 3) - 1) * 6 * K
         cy = c + (((mm // 3) % 3) - 1) * 6 * K
-        draw_ticks(d, cx, cy, AOD_T, 3, 2)
+        draw_ticks(d, cx, cy, AOD_T, TICK_W_Q_AOD, TICK_W_AOD)
         d.polygon(hand_points(cx, cy, ha, L_HOUR, SPEC_HOUR), fill=AOD)
         d.polygon(hand_points(cx, cy, ma, L_MIN, SPEC_MIN), fill=AOD)
     else:
         d.ellipse([0, 0, S * K - 1, S * K - 1], fill=BG)
-        draw_ticks(d, c, c, TICK, 5, 3)
+        draw_ticks(d, c, c, TICK, TICK_W_Q, TICK_W)
         draw_disc(d, c, c)
         for deg, ln, sp in ((ha, L_HOUR, SPEC_HOUR), (ma, L_MIN, SPEC_MIN)):
             d.polygon(hand_points(c, c, deg, ln, sp, SHADE_X * K, SHADE_Y * K), fill=SHADE)

@@ -49,11 +49,26 @@ diseño. Las seis constantes están juntas en `EpixWatchFaceView.mc`:
 
 Para volver a la aguja original del SVG, pon `W_*_BODY` a 1 y `K_SH_*` a 0.
 
+## Las marcas horarias
+
+Van emparejadas con las agujas: al ensanchar el cuerpo de la aguja, unas marcas
+finas dejan el dial descompensado. Pasaron de 5/3 px a **11/7 px**, y las de
+12, 3, 6 y 9 son además **el doble de largas**, para que sirvan de referencia
+sin tener que contarlas.
+
+| Constante | 12, 3, 6, 9 | Las otras ocho |
+|---|---|---|
+| `TICK_W_Q` / `TICK_W` (despierto) | 11 | 7 |
+| `TICK_W_Q_AOD` / `TICK_W_AOD` (reposo) | 7 | 4 |
+| `TICK_R_IN_Q` / `TICK_R_IN` (dónde empieza) | 0,855 | 0,905 |
+
+Todas acaban en `TICK_R_OUT` = 0,955 del radio.
+
 ## Always-On
 
 El fondo ámbar encendería el **100%** de la pantalla y el límite del AMOLED son
 el **10%** de píxeles. Así que en reposo la esfera **se invierte**: fondo negro
-y las mismas agujas en ámbar, con las marcas atenuadas. Medido: **2,55%** de
+y las mismas agujas en ámbar, con las marcas atenuadas. Medido: **2,89%** de
 píxeles encendidos, de sobra. El conjunto se desplaza unos píxeles cada minuto
 para repartir el desgaste.
 
