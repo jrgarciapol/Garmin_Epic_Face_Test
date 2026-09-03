@@ -1,6 +1,6 @@
 # Garmin Epic Face — Banco de pruebas
 
-Este repositorio contiene **11 variantes** de la esfera *Epix Digital* para el
+Este repositorio contiene **12 variantes** de la esfera *Epix Digital* para el
 **Garmin Epix Pro 51 mm (Gen 2)**. Cada subcarpeta es un **proyecto Connect IQ
 completo e independiente**, con su **id de app propio**, así que puedes
 instalarlas todas a la vez en el reloj.
@@ -44,6 +44,7 @@ entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
 | Carpeta | Estilo | App |
 |---|---|---|
 | `Orbita/` | Barriecito + orbe que recorre el borde del dial | Epix Orbita |
+| `Pulso/`  | Barriecito + dos orbes que giran al ritmo del corazón | Epix Pulso |
 
 El orbe avanza **6° por segundo** (una vuelta por minuto) dejando una estela de
 5 puntos, y su **tono recorre el espectro** en cada vuelta. Se dibuja antes que
@@ -53,6 +54,19 @@ Barriecito (196 / 108 / 92) se mantienen intactos.
 Solo se anima con la pantalla despierta: una esfera Garmin se redibuja una vez
 por segundo en alto consumo y solo una vez por minuto en reposo. En Always-On
 no se dibuja el orbe.
+
+En **`Pulso/`** dos orbes nacen blancos del mismo punto y recorren media vuelta
+en sentidos opuestos, ganando color (uno hacia rojos, otro hacia azules). La
+**velocidad la marca el pulso**, y la **estela se estira** en proporción: cubre
+el arco recorrido entre fotogramas, así que a 1 fps se lee como un trazo
+continuo en vez de puntos sueltos. Cada punto de la estela conserva el tono que
+tuvo la cabeza en ese instante.
+
+Al encontrarse estalla un orbe de **anillos de arcoíris cuyo tamaño crece con
+las pulsaciones**, sin tope: a 60 ppm es un destello discreto y a 160 ppm invade
+la esfera y tapa la hora unos segundos, a propósito, para que no pase
+desapercibido. Después colapsa y los orbes renacen con los sentidos invertidos.
+Necesita el permiso `Sensor` para leer el pulso; si no hay dato, usa 60 ppm.
 
 ## Cómo compilar una
 
