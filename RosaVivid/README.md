@@ -1,0 +1,1 @@
+# Epix Rosa Vivid — 3e Rosa saturada (verde/rojo puros)

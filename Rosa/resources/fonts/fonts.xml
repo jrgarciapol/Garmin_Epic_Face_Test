@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fonts>
+    <font id="TimeBig" filename="TimeBig.fnt" antialias="true"/>
+    <font id="AodBig"  filename="AodBig.fnt"  antialias="true"/>
+    <font id="MonBig"  filename="MonBig.fnt"  antialias="true"/>
+</fonts>
