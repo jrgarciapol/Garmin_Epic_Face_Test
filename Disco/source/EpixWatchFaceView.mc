@@ -61,12 +61,15 @@ class EpixWatchFaceView extends Ui.WatchFace {
     // ---- Marcas horarias ----
     // El grosor va emparejado con el de las agujas: al ensanchar el cuerpo de
     // la aguja, las marcas finas se quedaban atrás y el dial se descompensaba.
-    private const TICK_W_Q     = 11;    // 12, 3, 6 y 9
-    private const TICK_W       = 7;     // las otras ocho
-    private const TICK_W_Q_AOD = 7;     // las mismas, en reposo
-    private const TICK_W_AOD   = 4;
-    private const TICK_R_IN_Q  = 0.855; // las de los cuartos, más largas
-    private const TICK_R_IN    = 0.905;
+    // Al engordarlas hubo que ALARGARLAS en la misma medida: con 26 px de
+    // ancho y la longitud de antes se volvían cuadrados y dejaban de leerse
+    // como marcas. Ancho y largo van juntos.
+    private const TICK_W_Q     = 26;    // 12, 3, 6 y 9
+    private const TICK_W       = 17;    // las otras ocho
+    private const TICK_W_Q_AOD = 16;    // las mismas, en reposo
+    private const TICK_W_AOD   = 11;
+    private const TICK_R_IN_Q  = 0.775; // las de los cuartos, más largas
+    private const TICK_R_IN    = 0.855;
     private const TICK_R_OUT   = 0.955; // todas acaban a la misma altura
 
     function initialize() {
@@ -158,21 +161,33 @@ class EpixWatchFaceView extends Ui.WatchFace {
     //! gruesas Y más largas, para que sirvan de referencia de un vistazo.
     //! El grosor va en proporción al de las agujas: si engordas unas, engorda
     //! las otras o el dial se descompensa.
+    //! A estos grosores no vale `drawLine` con pincel ancho: el remate de la
+    //! línea depende del dispositivo y a 26 px se nota. Cada marca es un
+    //! rectángulo (`fillPolygon`), igual que las agujas.
     private function drawTicks(dc, cx, cy, color, wQuarter, wOther) {
         var r = dc.getWidth() / 2;
         var r2 = r * TICK_R_OUT;
         dc.setColor(color, Gfx.COLOR_TRANSPARENT);
         for (var i = 0; i < 12; i += 1) {
             var a = Math.toRadians(i * 30 - 90);
-            var ca = Math.cos(a);
-            var sa = Math.sin(a);
+            var ux = Math.cos(a);
+            var uy = Math.sin(a);
+            var px = -uy;             // perpendicular al radio
+            var py = ux;
             var quarter = (i % 3 == 0);
             var r1 = r * (quarter ? TICK_R_IN_Q : TICK_R_IN);
-            dc.setPenWidth(quarter ? wQuarter : wOther);
-            dc.drawLine((cx + r1 * ca).toNumber(), (cy + r1 * sa).toNumber(),
-                        (cx + r2 * ca).toNumber(), (cy + r2 * sa).toNumber());
+            var hw = (quarter ? wQuarter : wOther) / 2.0;
+            var ix = cx + ux * r1;
+            var iy = cy + uy * r1;
+            var ox = cx + ux * r2;
+            var oy = cy + uy * r2;
+            dc.fillPolygon([
+                [(ix + px * hw).toNumber(), (iy + py * hw).toNumber()],
+                [(ox + px * hw).toNumber(), (oy + py * hw).toNumber()],
+                [(ox - px * hw).toNumber(), (oy - py * hw).toNumber()],
+                [(ix - px * hw).toNumber(), (iy - py * hw).toNumber()]
+            ]);
         }
-        dc.setPenWidth(1);
     }
 
     //! Disco central. Sin degradados: siete anillos concéntricos, cada uno un

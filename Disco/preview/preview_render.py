@@ -30,9 +30,9 @@ W_MIN_TAIL, W_MIN_BODY, K_SH_MIN = 13, 10, 0.66
 W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR = 16, 13, 0.60
 SPEC_MIN = (W_MIN_TAIL, W_MIN_BODY, K_SH_MIN)
 SPEC_HOUR = (W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR)
-TICK_W_Q, TICK_W = 11, 7
-TICK_W_Q_AOD, TICK_W_AOD = 7, 4
-TICK_R_IN_Q, TICK_R_IN, TICK_R_OUT = 0.855, 0.905, 0.955
+TICK_W_Q, TICK_W = 26, 17
+TICK_W_Q_AOD, TICK_W_AOD = 16, 11
+TICK_R_IN_Q, TICK_R_IN, TICK_R_OUT = 0.775, 0.855, 0.955
 R_DISC, R_PIVOT = 27, 5
 SHADE_X, SHADE_Y = 2, 3
 
@@ -62,15 +62,21 @@ def draw_hand(d, cx, cy, deg, length, spec):
 
 
 def draw_ticks(d, cx, cy, color, w_quarter, w_other):
+    """Cada marca es un rectangulo, igual que en el .mc."""
     r = S * K / 2
     r2 = r * TICK_R_OUT
     for i in range(12):
         a = math.radians(i * 30 - 90)
-        ca, sa = math.cos(a), math.sin(a)
+        ux, uy = math.cos(a), math.sin(a)
+        px, py = -uy, ux
         quarter = (i % 3 == 0)
         r1 = r * (TICK_R_IN_Q if quarter else TICK_R_IN)
-        d.line([(cx + r1 * ca, cy + r1 * sa), (cx + r2 * ca, cy + r2 * sa)],
-               fill=color, width=(w_quarter if quarter else w_other) * K)
+        hw = (w_quarter if quarter else w_other) * K / 2.0
+        ix, iy = cx + ux * r1, cy + uy * r1
+        ox, oy = cx + ux * r2, cy + uy * r2
+        d.polygon([(ix + px * hw, iy + py * hw), (ox + px * hw, oy + py * hw),
+                   (ox - px * hw, oy - py * hw), (ix - px * hw, iy - py * hw)],
+                  fill=color)
 
 
 def draw_disc(d, cx, cy):
