@@ -38,12 +38,25 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const L_MIN   = 215;  // largo del minutero desde el centro
     private const L_HOUR  = 142;  // largo del horario
     private const TAIL    = 34;   // cola por detrás del pivote
-    private const W_MIN   = 11;   // ancho del minutero en el extremo de la cola
-    private const W_HOUR  = 12;   // ancho del horario
     private const R_DISC  = 27;   // disco central
     private const R_PIVOT = 5;
     private const SHADE_X = 2;    // desplazamiento de la sombra
     private const SHADE_Y = 3;
+
+    // ---- Forma de la aguja: cuerpo ancho y punta de lanza ----
+    // El diseño original estrecha en línea recta desde la cola hasta la punta,
+    // así que a media aguja ya solo quedan 3-4 px y cuesta verla. Aquí la
+    // aguja se mantiene casi paralela hasta el "hombro" y solo entonces se
+    // afila. Se gana masa visible sin perder la punta, que es lo bonito.
+    //   W_*_TAIL  ancho en el extremo de la cola
+    //   W_*_BODY  ancho en el hombro
+    //   K_SH_*    posición del hombro, en fracción del largo de la aguja
+    private const W_MIN_TAIL  = 13;
+    private const W_MIN_BODY  = 10;
+    private const K_SH_MIN    = 0.66;
+    private const W_HOUR_TAIL = 16;
+    private const W_HOUR_BODY = 13;
+    private const K_SH_HOUR   = 0.60;
 
     function initialize() {
         WatchFace.initialize();
@@ -85,11 +98,13 @@ class EpixWatchFaceView extends Ui.WatchFace {
 
         // Primero las dos sombras, luego los dos cuerpos: así la sombra del
         // minutero no cae por encima del horario.
-        fillHand(dc, cx, cy, ha, L_HOUR, W_HOUR, COLOR_SHADE, SHADE_X, SHADE_Y);
-        fillHand(dc, cx, cy, ma, L_MIN,  W_MIN,  COLOR_SHADE, SHADE_X, SHADE_Y);
+        fillHand(dc, cx, cy, ha, L_HOUR, W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR,
+                 COLOR_SHADE, SHADE_X, SHADE_Y);
+        fillHand(dc, cx, cy, ma, L_MIN, W_MIN_TAIL, W_MIN_BODY, K_SH_MIN,
+                 COLOR_SHADE, SHADE_X, SHADE_Y);
 
-        drawHand(dc, cx, cy, ha, L_HOUR, W_HOUR);
-        drawHand(dc, cx, cy, ma, L_MIN,  W_MIN);
+        drawHand(dc, cx, cy, ha, L_HOUR, W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR);
+        drawHand(dc, cx, cy, ma, L_MIN,  W_MIN_TAIL,  W_MIN_BODY,  K_SH_MIN);
 
         dc.setColor(COLOR_PIVOT, Gfx.COLOR_TRANSPARENT);
         dc.fillCircle(cx, cy, R_PIVOT);
@@ -112,8 +127,10 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var ha = hourAngle(now);
         var ma = minuteAngle(now);
         dc.setColor(COLOR_AOD, Gfx.COLOR_TRANSPARENT);
-        dc.fillPolygon(handPoints(cx, cy, ha, L_HOUR, W_HOUR, 0, 0));
-        dc.fillPolygon(handPoints(cx, cy, ma, L_MIN,  W_MIN,  0, 0));
+        dc.fillPolygon(handPoints(cx, cy, ha, L_HOUR, W_HOUR_TAIL, W_HOUR_BODY,
+                                  K_SH_HOUR, 0, 0));
+        dc.fillPolygon(handPoints(cx, cy, ma, L_MIN, W_MIN_TAIL, W_MIN_BODY,
+                                  K_SH_MIN, 0, 0));
     }
 
     //! Ángulo del horario: incluye los minutos, para que no salte de golpe.
@@ -160,10 +177,10 @@ class EpixWatchFaceView extends Ui.WatchFace {
         }
     }
 
-    //! Los tres vértices de una aguja: punta afilada, y una cola ancha que
-    //! sobresale por detrás del pivote. El estrechamiento es lineal, así que
-    //! con un triángulo basta.
-    private function handPoints(cx, cy, deg, length, wTail, dx, dy) {
+    //! Los cinco vértices de una aguja, en este orden:
+    //!   0 punta · 1 hombro izq. · 2 cola izq. · 3 cola der. · 4 hombro der.
+    //! De la cola al hombro apenas estrecha; del hombro a la punta se afila.
+    private function handPoints(cx, cy, deg, length, wTail, wBody, kSh, dx, dy) {
         var a = Math.toRadians(deg - 90);
         var ux = Math.cos(a);
         var uy = Math.sin(a);
@@ -171,33 +188,38 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var py = ux;
         var bx = cx - ux * TAIL;      // centro del extremo de la cola
         var by = cy - uy * TAIL;
-        var hw = wTail / 2.0;
+        var sx = cx + ux * length * kSh;   // centro del hombro
+        var sy = cy + uy * length * kSh;
+        var ht = wTail / 2.0;
+        var hb = wBody / 2.0;
         return [
             [(cx + ux * length + dx).toNumber(), (cy + uy * length + dy).toNumber()],
-            [(bx + px * hw + dx).toNumber(),     (by + py * hw + dy).toNumber()],
-            [(bx - px * hw + dx).toNumber(),     (by - py * hw + dy).toNumber()]
+            [(sx + px * hb + dx).toNumber(),     (sy + py * hb + dy).toNumber()],
+            [(bx + px * ht + dx).toNumber(),     (by + py * ht + dy).toNumber()],
+            [(bx - px * ht + dx).toNumber(),     (by - py * ht + dy).toNumber()],
+            [(sx - px * hb + dx).toNumber(),     (sy - py * hb + dy).toNumber()]
         ];
     }
 
-    //! Aguja de un solo color (se usa para la sombra).
-    private function fillHand(dc, cx, cy, deg, length, wTail, color, dx, dy) {
+    //! Aguja de un solo color (se usa para la sombra y para el Always-On).
+    private function fillHand(dc, cx, cy, deg, length, wTail, wBody, kSh, color, dx, dy) {
         dc.setColor(color, Gfx.COLOR_TRANSPARENT);
-        dc.fillPolygon(handPoints(cx, cy, deg, length, wTail, dx, dy));
+        dc.fillPolygon(handPoints(cx, cy, deg, length, wTail, wBody, kSh, dx, dy));
     }
 
     //! Aguja completa: cuerpo oscuro y, encima, la mitad que da a la luz en un
     //! tono más claro. Es el sustituto del degradado del diseño original.
-    private function drawHand(dc, cx, cy, deg, length, wTail) {
-        var pts = handPoints(cx, cy, deg, length, wTail, 0, 0);
+    private function drawHand(dc, cx, cy, deg, length, wTail, wBody, kSh) {
+        var pts = handPoints(cx, cy, deg, length, wTail, wBody, kSh, 0, 0);
         dc.setColor(COLOR_INK, Gfx.COLOR_TRANSPARENT);
         dc.fillPolygon(pts);
 
-        // Bisel: de la punta al centro de la cola, y de ahí a un solo lado.
+        // Bisel: la mitad que va de la punta al centro de la cola por un lado.
         var a = Math.toRadians(deg - 90);
         var bx = (cx - Math.cos(a) * TAIL).toNumber();
         var by = (cy - Math.sin(a) * TAIL).toNumber();
         dc.setColor(COLOR_BEVEL, Gfx.COLOR_TRANSPARENT);
-        dc.fillPolygon([pts[0], pts[1], [bx, by]]);
+        dc.fillPolygon([pts[0], pts[1], pts[2], [bx, by]]);
     }
 
     //! El sistema avisa al pasar a reposo / volver de reposo.

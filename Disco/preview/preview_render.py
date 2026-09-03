@@ -26,28 +26,36 @@ AOD   = (0xF7, 0xC8, 0x1E)
 AOD_T = (0x4A, 0x3A, 0x00)
 
 L_MIN, L_HOUR, TAIL = 215, 142, 34
-W_MIN, W_HOUR = 11, 12
+W_MIN_TAIL, W_MIN_BODY, K_SH_MIN = 13, 10, 0.66
+W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR = 16, 13, 0.60
+SPEC_MIN = (W_MIN_TAIL, W_MIN_BODY, K_SH_MIN)
+SPEC_HOUR = (W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR)
 R_DISC, R_PIVOT = 27, 5
 SHADE_X, SHADE_Y = 2, 3
 
 
-def hand_points(cx, cy, deg, length, w_tail, dx=0, dy=0):
+def hand_points(cx, cy, deg, length, spec, dx=0, dy=0):
+    """Cinco vertices: punta, hombro izq, cola izq, cola der, hombro der."""
+    w_tail, w_body, k_sh = spec
     a = math.radians(deg - 90)
     ux, uy = math.cos(a), math.sin(a)
     px, py = -uy, ux
     bx, by = cx - ux * TAIL * K, cy - uy * TAIL * K
-    hw = w_tail * K / 2.0
+    sx, sy = cx + ux * length * K * k_sh, cy + uy * length * K * k_sh
+    ht, hb = w_tail * K / 2.0, w_body * K / 2.0
     return [(cx + ux * length * K + dx, cy + uy * length * K + dy),
-            (bx + px * hw + dx, by + py * hw + dy),
-            (bx - px * hw + dx, by - py * hw + dy)]
+            (sx + px * hb + dx, sy + py * hb + dy),
+            (bx + px * ht + dx, by + py * ht + dy),
+            (bx - px * ht + dx, by - py * ht + dy),
+            (sx - px * hb + dx, sy - py * hb + dy)]
 
 
-def draw_hand(d, cx, cy, deg, length, w_tail):
-    pts = hand_points(cx, cy, deg, length, w_tail)
+def draw_hand(d, cx, cy, deg, length, spec):
+    pts = hand_points(cx, cy, deg, length, spec)
     d.polygon(pts, fill=INK)
     a = math.radians(deg - 90)
     b = (cx - math.cos(a) * TAIL * K, cy - math.sin(a) * TAIL * K)
-    d.polygon([pts[0], pts[1], b], fill=BEVEL)
+    d.polygon([pts[0], pts[1], pts[2], b], fill=BEVEL)
 
 
 def draw_ticks(d, cx, cy, color, w_quarter, w_other):
@@ -83,16 +91,16 @@ def face(hh, mm, aod=False):
         cx = c + ((mm % 3) - 1) * 6 * K
         cy = c + (((mm // 3) % 3) - 1) * 6 * K
         draw_ticks(d, cx, cy, AOD_T, 3, 2)
-        d.polygon(hand_points(cx, cy, ha, L_HOUR, W_HOUR), fill=AOD)
-        d.polygon(hand_points(cx, cy, ma, L_MIN, W_MIN), fill=AOD)
+        d.polygon(hand_points(cx, cy, ha, L_HOUR, SPEC_HOUR), fill=AOD)
+        d.polygon(hand_points(cx, cy, ma, L_MIN, SPEC_MIN), fill=AOD)
     else:
         d.ellipse([0, 0, S * K - 1, S * K - 1], fill=BG)
         draw_ticks(d, c, c, TICK, 5, 3)
         draw_disc(d, c, c)
-        for deg, ln, wt in ((ha, L_HOUR, W_HOUR), (ma, L_MIN, W_MIN)):
-            d.polygon(hand_points(c, c, deg, ln, wt, SHADE_X * K, SHADE_Y * K), fill=SHADE)
-        draw_hand(d, c, c, ha, L_HOUR, W_HOUR)
-        draw_hand(d, c, c, ma, L_MIN, W_MIN)
+        for deg, ln, sp in ((ha, L_HOUR, SPEC_HOUR), (ma, L_MIN, SPEC_MIN)):
+            d.polygon(hand_points(c, c, deg, ln, sp, SHADE_X * K, SHADE_Y * K), fill=SHADE)
+        draw_hand(d, c, c, ha, L_HOUR, SPEC_HOUR)
+        draw_hand(d, c, c, ma, L_MIN, SPEC_MIN)
         d.ellipse([c - R_PIVOT * K, c - R_PIVOT * K,
                    c + R_PIVOT * K, c + R_PIVOT * K], fill=PIVOT)
 

@@ -91,7 +91,7 @@ concéntricos en el disco y una sombra desplazada 2-3 px.
 
 Su **Always-On invierte la esfera**: el fondo ámbar encendería el 100% de la
 pantalla y el techo es el 10%, así que en reposo pasa a fondo negro con las
-agujas en ámbar (1,59% de píxeles). Detalle en `Disco/README.md`.
+agujas en ámbar (2,55% de píxeles). Detalle en `Disco/README.md`.
 
 ## Cómo compilar una
 
