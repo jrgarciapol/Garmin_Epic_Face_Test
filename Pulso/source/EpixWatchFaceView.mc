@@ -40,10 +40,13 @@ class EpixWatchFaceView extends Ui.WatchFace {
     // ¿Pantalla en alto consumo (el usuario la está mirando)?
     private var mIsAwake = true;
 
-    //! Latidos acumulados: es el "reloj" de la animación. Avanza pulso/60 en
-    //! cada refresco interactivo (uno por segundo), así que el movimiento va
-    //! literalmente al ritmo del corazón.
+    //! Latidos acumulados: es el "reloj" de la animación. En cada refresco
+    //! interactivo avanza pulso/60 por SEGUNDO REAL transcurrido, así que el
+    //! movimiento va literalmente al ritmo del corazón aunque el sistema
+    //! encadene varios redibujados seguidos.
     private var mBeats = 0.0;
+    //! Marca de tiempo del último refresco interactivo, en ms (Sys.getTimer()).
+    private var mLastMs = null;
 
     // Ajustes configurables por el usuario.
     private var mUse24Hour = true;
@@ -131,9 +134,22 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var h = dc.getHeight();
         var cx = w / 2;
 
-        // Un refresco interactivo = un segundo => avanzamos pulso/60 latidos.
+        // La fase avanza con el TIEMPO REAL transcurrido, no con el número de
+        // redibujados. Al levantar la muñeca el sistema encadena varios
+        // onUpdate en el mismo instante (la transición de reposo a alto
+        // consumo), y contando "un redibujado = un segundo" los orbes pegaban
+        // un acelerón durante los primeros segundos.
         var hr = heartRate();
-        mBeats += hr / 60.0;
+        var ms = Sys.getTimer();          // milisegundos desde el arranque
+        var dt = 1.0;
+        if (mLastMs != null) {
+            dt = (ms - mLastMs) / 1000.0;
+            // Fuera de rango: o el contador ha dado la vuelta, o venimos de un
+            // rato largo en reposo. Damos un paso normal y seguimos.
+            if (dt < 0.0 || dt > 2.0) { dt = 1.0; }
+        }
+        mLastMs = ms;
+        mBeats += (hr / 60.0) * dt;
         // Envolvemos en dos ciclos para no crecer sin fin, conservando la
         // paridad (que es la que decide el sentido de giro).
         if (mBeats > 2 * CYCLE_BEATS) {
