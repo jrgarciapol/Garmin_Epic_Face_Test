@@ -18,9 +18,11 @@ using Toybox.Application as App;
 //!       otro hacia los azules.
 //!     - La VELOCIDAD la marca el pulso (grados por latido fijos), así que a
 //!       más pulsaciones, más rápido giran y antes chocan.
-//!     - La ESTELA cubre justo el arco recorrido desde el fotograma anterior,
-//!       así que tapa el salto del refresco sea cual sea su ritmo, y cada
-//!       punto lleva el tono que tuvo la cabeza en ese instante.
+//!     - La ESTELA cubre 1,5 s de recorrido (nunca menos que el paso del
+//!       último fotograma), y cada punto lleva el tono que tuvo la cabeza en
+//!       ese instante. Esa longitud importa: a mitad de camino los orbes pasan
+//!       por detrás de la hora y, con hora de dos cifras, la cabeza queda
+//!       tapada por los dígitos. La cola larga asoma por arriba y por abajo.
 //!     - Al encontrarse estalla un orbe de anillos de arcoíris, este sí POR
 //!       DELANTE de los textos, cuyo TAMAÑO es proporcional al pulso: a 60 ppm
 //!       es un destello discreto; a 160 ppm invade la esfera y tapa la hora
@@ -78,7 +80,9 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const CYCLE_BEATS  = 18.0;  // TRAVEL + MERGE
     private const TRAIL_DOTS   = 8;     // puntos de estela (ajustado al
                                         // presupuesto de tiempo de onUpdate)
-    private const TRAIL_OVERLAP = 1.15; // solape entre la estela de un
+    private const TRAIL_SECS   = 1.5;   // segundos de recorrido que cubre la
+                                        // estela: es su longitud "de diseño"
+    private const TRAIL_OVERLAP = 1.15; // solape mínimo entre la estela de un
                                         // fotograma y la del siguiente
 
     function initialize() {
@@ -316,17 +320,20 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var t = p / TRAVEL_BEATS;
         var adv = DEG_PER_BEAT * p;
 
-        // La estela cubre EXACTAMENTE el arco recorrido desde el fotograma
-        // anterior (por eso `dt`), con un pelín de solape para que un trazo
-        // empalme con el siguiente.
+        // Longitud de la estela: 1,5 s de recorrido, con un mínimo del arco
+        // que la cabeza avanzó desde el fotograma anterior (más un pelín de
+        // solape), para que un trazo empalme siempre con el siguiente aunque
+        // el refresco venga lento.
         //
-        // Antes cubría un tiempo fijo de 1,5 s, y ahí estaba el problema de
-        // los primeros segundos: al levantar la muñeca el sistema encadena
-        // varios onUpdate muy seguidos, así que la cabeza avanzaba una pizca
-        // mientras la estela seguía midiendo 1,5 s. El resultado era un
-        // borrón largo que apenas se movía — se leía como "va lento y pastoso"
-        // hasta que el refresco se asentaba en uno por segundo.
-        var span = DEG_PER_BEAT * bps * dt * TRAIL_OVERLAP;
+        // Los 1,5 s no son decorativos: a mitad de camino los orbes pasan por
+        // detrás de la hora, y con hora de DOS CIFRAS el bloque de texto llega
+        // a x=11..443 mientras la órbita pasa por x=16 y 438. Es decir, la
+        // cabeza queda tapada por los dígitos. Con la estela larga la cola
+        // asoma por encima y por debajo de los números y el orbe se sigue
+        // viendo; acortándola, desaparece en ese tramo.
+        var span = DEG_PER_BEAT * bps * TRAIL_SECS;
+        var paso = DEG_PER_BEAT * bps * dt * TRAIL_OVERLAP;
+        if (span < paso) { span = paso; }
         if (span > adv) { span = adv; }
 
         for (var i = TRAIL_DOTS; i >= 1; i -= 1) {

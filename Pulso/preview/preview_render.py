@@ -22,7 +22,7 @@ R_ORB, R_DOT = 211, 11
 DEG_PER_BEAT = 12.0
 TRAVEL_BEATS, MERGE_BEATS = 15.0, 3.0
 CYCLE = TRAVEL_BEATS + MERGE_BEATS
-TRAIL_DOTS, TRAIL_OVERLAP = 8, 1.15
+TRAIL_DOTS, TRAIL_SECS, TRAIL_OVERLAP = 8, 1.5, 1.15
 
 HR = int(sys.argv[1]) if len(sys.argv) > 1 else 95
 
@@ -101,9 +101,9 @@ def draw_pulse(d, beats, hr, dt=1.0, fase="viaje"):
     if fase == "viaje" and p < TRAVEL_BEATS:
         t = p / TRAVEL_BEATS
         adv = DEG_PER_BEAT * p
-        # la estela cubre lo avanzado desde el fotograma anterior, no un
-        # tiempo fijo: asi empalma con el trazo de la vez pasada
-        span = min(DEG_PER_BEAT * bps * dt * TRAIL_OVERLAP, adv)
+        # 1,5 s de recorrido, nunca menos que el paso del ultimo fotograma
+        span = min(max(DEG_PER_BEAT * bps * TRAIL_SECS,
+                       DEG_PER_BEAT * bps * dt * TRAIL_OVERLAP), adv)
         for i in range(TRAIL_DOTS, 0, -1):
             f = i / float(TRAIL_DOTS)
             back = span * f

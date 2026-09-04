@@ -49,8 +49,8 @@ entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
 
 En `Pulso/` y `PulsoXL/` el **choque se dibuja por delante de los textos** —los
 dos puntos de encuentro tienen distinto texto detrás y por debajo no salían
-iguales— y la **estela mide el arco recorrido desde el fotograma anterior**, no
-un tiempo fijo. Ver `PulsoXL/README.md`.
+iguales— y la **estela mide 1,5 s de recorrido**, con un mínimo del paso del
+último fotograma. Ver `PulsoXL/README.md`.
 
 El orbe avanza **6° por segundo** (una vuelta por minuto) dejando una estela de
 5 puntos, y su **tono recorre el espectro** en cada vuelta. Se dibuja antes que
