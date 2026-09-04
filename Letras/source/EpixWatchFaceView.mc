@@ -40,12 +40,16 @@ class EpixWatchFaceView extends Ui.WatchFace {
     // que es la palabra más informativa de las tres.
     //
     // Va al MISMO CUERPO que las otras líneas y en un ámbar quemado: se
-    // separa del ámbar de los minutos sobre todo por el TONO, no por estar
-    // apagado. Bajarle el brillo para diferenciarlo es justo lo que no
-    // funcionaba antes.
+    // separa del ámbar de los minutos por el TONO, no por estar apagado.
+    // Bajarle el brillo para diferenciarlo es justo lo que no funcionaba.
+    //
+    // Está en el máximo de brillo que admite ese tono sin desaturar: subir de
+    // aquí obliga a tirar hacia el blanco, y entonces empieza a competir con
+    // el hueso de la hora. Los escalones siguientes serían 0xFF9833 y
+    // 0xFFA54D, ya rebajando saturación.
     private const COLOR_BG   = Gfx.COLOR_BLACK;
     private const COLOR_HOUR = 0xF3E7D3; // hueso
-    private const COLOR_LINK = 0xE07B18; // ámbar quemado
+    private const COLOR_LINK = 0xFF8C1B; // ámbar quemado, a tope de brillo
     private const COLOR_MIN  = 0xFFB020; // ámbar vivo
 
     // ---- Reparto vertical, en fracción de la altura ----
