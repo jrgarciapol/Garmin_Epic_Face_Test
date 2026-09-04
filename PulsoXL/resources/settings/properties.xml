@@ -3,10 +3,13 @@
     <!-- Formato de 24 horas (si el sistema también lo permite). -->
     <property id="Use24Hour" type="boolean">true</property>
 
-    <!-- Color de acento interactivo (segundos y línea). RGB 24 bits. -->
-    <!-- 0x1E9BFF = azul brillante (por defecto). -->
-    <property id="AccentColor" type="number">2006015</property>
+    <!-- Color del mes. RGB 24 bits. 0x93A6B2 = gris azulado (por defecto):
+         neutro a propósito, para no meter un cuarto tono que pelee con el
+         cian del orbe frío cuando le pasa por delante. -->
+    <property id="AccentColor" type="number">9676466</property>
 
-    <!-- Color de la hora en Always-On. 0x00FF00 = verde (por defecto). -->
-    <property id="AodColor" type="number">65280</property>
+    <!-- Color de la hora en Always-On. 0x6FDC8C = verde menta (por defecto),
+         el mismo del día de la semana. Sustituye al 0x00FF00 puro, que además
+         de chillón era MENOS luminoso que este (72% frente a 75%). -->
+    <property id="AodColor" type="number">7330956</property>
 </properties>

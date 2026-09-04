@@ -20,7 +20,8 @@ instalarlas todas a la vez en el reloj.
 
 Todas comparten el mismo diseño (día de la semana arriba en verde, hora grande
 en blanco, día del mes verde + mes azul abajo) y usan **avance tabular** en las
-cifras para que la hora no se desplace al cambiar de minuto.
+cifras para que la hora no se desplace al cambiar de minuto. `Pulso/` y
+`PulsoXL/` llevan una paleta revisada, distinta de estas ocho.
 
 ## Variantes "Rosa de los vientos"
 
@@ -79,6 +80,12 @@ propósito, para que no pase desapercibido. Después colapsa y los orbes renacen
 En **`PulsoXL/`** todo eso es igual, pero además el **radio del orbe** crece con
 las pulsaciones: 9 px en reposo, 29 px a 160 ppm. La estela, que se mide en
 múltiplos de ese radio, pasa de hilo fino a brochazo.
+
+Las dos usan una **paleta de tres tonos**: naranja (30°) y cian (190°) para los
+orbes, verde (110°) para el texto — separados 80° exactos. El color saturado es
+de lo que se mueve, así que el texto va con la saturación baja y una jerarquía
+de brillo: hora blanca 100%, día de la semana y número en menta `#6FDC8C` 75%,
+mes en gris azulado `#93A6B2` 64%. Detalle en `PulsoXL/README.md`.
 
 Lee el pulso con el permiso `SensorHistory` (el permiso `Sensor` **no es válido
 en una esfera**: solo lo admiten apps y widgets). Primero intenta el pulso en

@@ -15,7 +15,9 @@ OUT = os.path.join(_HERE, "preview.png")
 OUT_GIF = os.path.join(_HERE, "preview.gif")
 
 S = 454
-GREEN = (0, 255, 0); BLUE = (30, 155, 255); WHITE = (255, 255, 255)
+# Triada: naranja y cian son de los orbes, verde del texto (80 grados de
+# separacion entre los tres). El mes se retira a un gris azulado neutro.
+GREEN = (0x6F, 0xDC, 0x8C); BLUE = (0x93, 0xA6, 0xB2); WHITE = (255, 255, 255)
 Y_WDAY, Y_TIME, Y_DATE = 0.200, 0.500, 0.815
 
 # Mismos valores que el .mc

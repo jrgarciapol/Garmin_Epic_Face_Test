@@ -58,8 +58,8 @@ class EpixWatchFaceView extends Ui.WatchFace {
 
     // Ajustes configurables por el usuario.
     private var mUse24Hour = true;
-    private var mAccentColor = 0x1E9BFF; // azul (acento interactivo)
-    private var mAodColor = 0x00FF00;    // verde (hora en AOD)
+    private var mAccentColor = 0x93A6B2; // gris azulado (mes)
+    private var mAodColor = 0x6FDC8C;    // verde menta (hora en AOD)
 
     // Fuentes personalizadas (Henny Penny, avance tabular en las cifras).
     private var mTimeFont;   // 155 — hora interactiva
@@ -67,10 +67,21 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private var mNumFont;    // 78  — número del día del mes
     private var mMonFont;    // 70  — mes y día de la semana
 
-    // Colores.
+    // ---- Colores ----
+    // La esfera entera se apoya en TRES TONOS y nada más: naranja (30 grados)
+    // y cian (190) los ponen los orbes, y verde (110) el texto. Están
+    // separados 80 grados exactos, así que forman una tríada regular.
+    //
+    // El color saturado pertenece a lo que se MUEVE. El texto está quieto, así
+    // que va con la saturación baja y una jerarquía clara de brillo:
+    //   hora 100%  ·  día de la semana y número 75%  ·  mes 64%
+    // El verde era 0x00FF00 puro (72%), tan brillante que competía con la hora,
+    // y el mes era el texto más apagado de todos (0x1E9BFF, 53%). Ahora el mes
+    // se retira a un GRIS AZULADO neutro en vez de meter un cuarto color que
+    // pelee con el cian del orbe frío, y de paso sube a 64%.
     private const COLOR_BG    = Gfx.COLOR_BLACK;
     private const COLOR_TIME  = 0xFFFFFF; // blanco puro (hora)
-    private const COLOR_GREEN = 0x00FF00; // día de la semana y nº del día del mes
+    private const COLOR_GREEN = 0x6FDC8C; // día de la semana y nº del día del mes
 
     // Posiciones verticales como fracción de la altura de pantalla.
     private const Y_WDAY = 0.200; // día de la semana (arriba, sobre la hora)
@@ -471,12 +482,13 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var groupW = numW + gap + monW;
         var x0 = cx - groupW / 2;
 
-        // Número del día del mes en verde.
+        // Número del día del mes, en el mismo verde que el día de la semana.
         dc.setColor(COLOR_GREEN, Gfx.COLOR_TRANSPARENT);
         dc.drawText(x0, cy, mNumFont, num,
                     Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);
 
-        // Mes en azul de acento.
+        // Mes en gris azulado: es el dato que menos cambia, y así no compite
+        // con el cian del orbe frío cuando este le pasa por delante.
         dc.setColor(mAccentColor, Gfx.COLOR_TRANSPARENT);
         dc.drawText(x0 + numW + gap, cy, mMonFont, mon,
                     Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);

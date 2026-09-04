@@ -69,3 +69,35 @@ dos orbes que acababan de chocar, y su brillo daba tumbos —del **13,3%** del
 anillo violeta al **82,7%** del amarillo—, así que no crecía: parpadeaba. Ahora
 son los colores de los propios orbes fundiéndose: **frío por fuera, cálido
 después y núcleo blanco**.
+
+## Los colores del texto
+
+La esfera entera se apoya en **tres tonos y nada más**: naranja (30°) y cian
+(190°) los ponen los orbes, y verde (110°) el texto. Están separados **80°
+exactos**, así que forman una tríada regular.
+
+El principio: **el color saturado pertenece a lo que se mueve.** El texto está
+quieto, así que va con la saturación baja y una jerarquía clara de brillo.
+
+| | Antes | Ahora | Luminancia |
+|---|---|---|---|
+| Hora | `#FFFFFF` | `#FFFFFF` | 100% |
+| Día de la semana | `#00FF00` | `#6FDC8C` menta | 72% → **75%** |
+| Número del día | `#00FF00` | `#6FDC8C` menta | 72% → **75%** |
+| Mes | `#1E9BFF` | `#93A6B2` gris azulado | 53% → **64%** |
+| Hora en Always-On | `#00FF00` | `#6FDC8C` menta | 72% → **75%** |
+
+Dos cosas que salieron de medir y no de mirar:
+
+- El verde puro estaba al **72%**, casi tan brillante como la hora en blanco:
+  competía con ella en vez de acompañarla. El menta es **más luminoso** (75%) y
+  aun así se lee como secundario, porque lo que lo hacía gritar era la
+  saturación, no el brillo.
+- El mes era **el texto más apagado de la esfera** (53%). Ahora sube a 64%.
+
+El mes se retira a un **neutro** en vez de mantener un azul, para no meter un
+cuarto tono que pelee con el cian del orbe frío cuando este le pasa por delante.
+
+Los colores del mes y del Always-On viven en `resources/settings/properties.xml`
+(`AccentColor` y `AodColor`), así que se pueden cambiar desde Garmin Connect sin
+recompilar.
