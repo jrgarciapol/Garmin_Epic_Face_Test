@@ -39,14 +39,13 @@ class EpixWatchFaceView extends Ui.WatchFace {
     // relleno. Error: "Y" frente a "MENOS" son MEDIA HORA de diferencia, así
     // que es la palabra más informativa de las tres.
     //
-    // Va al MISMO CUERPO que las otras líneas y en un naranja que se separa
-    // del ámbar de los minutos SOLO POR EL TONO, no por el brillo: los dos
-    // están igual de encendidos, así que el enlace se distingue sin dejar de
-    // leerse. Bajarle el brillo para diferenciarlo es justo lo que no
-    // funcionaba.
+    // Va al MISMO CUERPO que las otras líneas y en un ámbar quemado: se
+    // separa del ámbar de los minutos sobre todo por el TONO, no por estar
+    // apagado. Bajarle el brillo para diferenciarlo es justo lo que no
+    // funcionaba antes.
     private const COLOR_BG   = Gfx.COLOR_BLACK;
     private const COLOR_HOUR = 0xF3E7D3; // hueso
-    private const COLOR_LINK = 0xFF8A3D; // naranja tostado
+    private const COLOR_LINK = 0xE07B18; // ámbar quemado
     private const COLOR_MIN  = 0xFFB020; // ámbar vivo
 
     // ---- Reparto vertical, en fracción de la altura ----

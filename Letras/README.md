@@ -31,7 +31,7 @@ y cero consumo) y toda la tinta en tres niveles del mismo eje cálido.
 | | Color | Por qué |
 |---|---|---|
 | Hora | `0xF3E7D3` hueso | Lo primero que se lee |
-| Enlace | `0xFF8A3D` naranja tostado | «Y» frente a «MENOS» son **media hora** |
+| Enlace | `0xE07B18` ámbar quemado | «Y» frente a «MENOS» son **media hora** |
 | Minutos | `0xFFB020` ámbar vivo | El dato que cambia |
 
 **Todas las líneas van al mismo cuerpo**, enlace incluido. Empezó siendo ámbar
@@ -40,11 +40,11 @@ frente a «MENOS» cambia la hora en treinta minutos, o sea que es la palabra
 **más informativa** de las tres, y tenerla atenuada y pequeña la convertía
 justo en la menos legible.
 
-El enlace se separa del ámbar de los minutos **solo por el tono, no por el
-brillo**: los dos están igual de encendidos, así que se distingue sin perder
-legibilidad. Los tres colores caen en el mismo eje cálido, de más apagado a más
-saturado: hueso → naranja → ámbar. Si quieres más separación, `0xFF6F5C`
-(coral) es el siguiente escalón sin salirse de la gama.
+El enlace se separa del ámbar de los minutos **por el tono**, no por estar
+apagado: bajarle el brillo para diferenciarlo es justo lo que no funcionaba. Los
+tres caen en el mismo eje cálido: hueso → ámbar quemado → ámbar vivo. Si
+quisieras más separación sin salirte de la gama, `0xFF8A3D` (naranja tostado) o
+`0xFF6F5C` (coral) son los escalones siguientes.
 
 ## VEINTICINCO
 
