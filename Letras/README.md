@@ -28,17 +28,18 @@ Son la parte delicada, más que el código:
 Pensada para AMOLED: **negro puro** de fondo (píxel apagado, contraste infinito
 y cero consumo) y toda la tinta en tres niveles del mismo eje cálido.
 
-| | Color | Cuerpo | Por qué |
-|---|---|---|---|
-| Hora | `0xF3E7D3` hueso | 116 | Lo primero que se lee |
-| Enlace | `0xFFB020` ámbar vivo | 100 | «Y» frente a «MENOS» son **media hora** |
-| Minutos | `0xFFB020` ámbar vivo | 116 | El dato que cambia |
+| | Color | Por qué |
+|---|---|---|
+| Hora | `0xF3E7D3` hueso | Lo primero que se lee |
+| Enlace | `0xFFB020` ámbar vivo | «Y» frente a «MENOS» son **media hora** |
+| Minutos | `0xFFB020` ámbar vivo | El dato que cambia |
 
-El enlace empezó siendo ámbar apagado y pequeño, tratándolo como gramática de
-relleno. Es un error: «Y» frente a «MENOS» cambia la hora en treinta minutos, o
-sea que es la palabra **más informativa** de las tres. Ahora va en el mismo
-ámbar vivo que los minutos y casi igual de grande, así que «Y CUARTO» se lee
-como un bloque, que es como se dice.
+**Todas las líneas van al mismo cuerpo**, enlace incluido. Empezó siendo ámbar
+apagado y más pequeño, tratándolo como gramática de relleno. Es un error: «Y»
+frente a «MENOS» cambia la hora en treinta minutos, o sea que es la palabra
+**más informativa** de las tres, y tenerla atenuada y pequeña la convertía
+justo en la menos legible. Ahora «Y CUARTO» se lee como un bloque, que es como
+se dice.
 
 ## VEINTICINCO
 
@@ -50,24 +51,22 @@ líneas. Es corte silábico válido (vein-ti-cin-co).
 ## Fuentes
 
 Connect IQ **no sabe escalar una fuente en ejecución**: cada cuerpo de letra es
-un atlas BMFont propio. Por eso hay cuatro y solo cuatro, generados por
+un atlas BMFont propio. Por eso hay tres y solo tres, generados por
 `fonts-src/gen_fonts.py`:
 
 | Id | Cuerpo | Para qué |
 |---|---|---|
-| `Word`  | 116 | Las dos líneas grandes cuando la frase cabe en tres |
-| `WordS` | 100 | Las tres líneas grandes cuando VEINTICINCO obliga a cuatro |
-| `Link`  | 100 | La línea del enlace (Y / MENOS / EN) |
-| `WordA` | 68  | Always-On, **las tres líneas** |
+| `Word`  | 116 | Las **tres** líneas cuando la frase cabe en tres |
+| `WordS` | 100 | Las **cuatro** líneas cuando VEINTICINCO obliga a cuatro |
+| `WordA` | 68  | Always-On, las tres o cuatro líneas |
 
 Solo hacen falta **17 letras** (`ACDEHIMNOPRSTUVYZ`), las que aparecen en las
 veinte palabras del sistema, así que los atlas son diminutos.
 
 ## Always-On
 
-**Las tres líneas van al mismo cuerpo.** Tenerlas a distinto tamaño hacía que
-el enlace —la palabra más informativa— fuera además la menos legible. Igualadas
-a 68, el caso peor es `3:35` (CUATRO MENOS VEINTI CINCO) y mide **9,28%**, por
+Igual que la interactiva, todas las líneas al mismo cuerpo. Igualadas a 68, el
+caso peor es `3:35` (CUATRO MENOS VEINTI CINCO) y mide **9,28%**, por
 debajo del techo del **10%** de píxeles encendidos.
 
 Para poder subir el cuerpo hasta ahí, en reposo **también se parte

@@ -22,7 +22,7 @@ azules, y el Always-On sigue siendo solo la hora.
 
 Ver `source/EpixWatchFaceView.mc`, función `dotRadius()`.
 
-## Dos correcciones sobre `Pulso/`
+## Dos correcciones (también aplicadas a `Pulso/`)
 
 **El choque va por delante de los textos.** Los dos puntos de encuentro son
 geométricamente simétricos, pero detrás de uno está `LUN` y detrás del otro
@@ -40,5 +40,3 @@ pastoso» hasta que el refresco se asentaba en uno por segundo. Ahora la estela
 cubre exactamente el paso de cada fotograma (por `TRAIL_OVERLAP` = 1,15, para
 que un trazo empalme con el siguiente), así que el movimiento se lee igual sea
 cual sea el ritmo de refresco.
-
-`Pulso/` conserva el comportamiento anterior en las dos cosas.

@@ -47,9 +47,10 @@ entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
 | `Pulso/`  | Barriecito + dos orbes que giran al ritmo del corazón | Epix Pulso |
 | `PulsoXL/`| Igual que Pulso, pero los orbes **engordan** con el pulso | Epix Pulso XL |
 
-En `PulsoXL/` el **choque se dibuja por delante de los textos** y la **estela
-mide el arco recorrido desde el fotograma anterior**, no un tiempo fijo. Ver
-`PulsoXL/README.md`.
+En `Pulso/` y `PulsoXL/` el **choque se dibuja por delante de los textos** —los
+dos puntos de encuentro tienen distinto texto detrás y por debajo no salían
+iguales— y la **estela mide el arco recorrido desde el fotograma anterior**, no
+un tiempo fijo. Ver `PulsoXL/README.md`.
 
 El orbe avanza **6° por segundo** (una vuelta por minuto) dejando una estela de
 5 puntos, y su **tono recorre el espectro** en cada vuelta. Se dibuja antes que
@@ -67,10 +68,10 @@ el arco recorrido entre fotogramas, así que a 1 fps se lee como un trazo
 continuo en vez de puntos sueltos. Cada punto de la estela conserva el tono que
 tuvo la cabeza en ese instante.
 
-Al encontrarse estalla un orbe de **anillos de arcoíris cuyo tamaño crece con
-las pulsaciones**, sin tope: a 60 ppm es un destello discreto y a 160 ppm invade
-la esfera y tapa la hora unos segundos, a propósito, para que no pase
-desapercibido. Después colapsa y los orbes renacen con los sentidos invertidos.
+Al encontrarse estalla, **por delante de los textos**, un orbe de **anillos de
+arcoíris cuyo tamaño crece con las pulsaciones**, sin tope: a 60 ppm es un
+destello discreto y a 160 ppm invade la esfera y tapa la hora unos segundos, a
+propósito, para que no pase desapercibido. Después colapsa y los orbes renacen con los sentidos invertidos.
 
 En **`PulsoXL/`** todo eso es igual, pero además el **radio del orbe** crece con
 las pulsaciones: 9 px en reposo, 29 px a 160 ppm. La estela, que se mide en
@@ -109,11 +110,11 @@ Dice la hora como la diría una persona: `2:45` es **TRES / MENOS / CUARTO** y
 «menos» salta a la hora siguiente, así que a las 9:35 pone DIEZ.
 
 Paleta **hueso y ámbar** sobre negro puro: la hora en hueso, y el enlace y los
-minutos en ámbar vivo, para que «Y CUARTO» se lea como un bloque — «y» frente a
-«menos» son media hora de diferencia, así que el enlace no puede ceder.
-VEINTICINCO se parte en dos líneas porque es casi el doble de larga que el
-resto. En su Always-On **las tres líneas van al mismo cuerpo** (68), llevado al
-máximo que permite el techo del 10% de píxeles: 9,28% en el caso peor. Detalle en `Letras/README.md`.
+minutos en ámbar vivo. **Todas las líneas van al mismo cuerpo**, enlace
+incluido: «y» frente a «menos» son media hora de diferencia, así que no puede
+ser la línea pequeña. VEINTICINCO se parte en dos líneas porque es casi el
+doble de larga que el resto. El Always-On va al máximo que permite el techo del
+10% de píxeles: 9,28% en el caso peor. Detalle en `Letras/README.md`.
 
 ## Cómo compilar una
 

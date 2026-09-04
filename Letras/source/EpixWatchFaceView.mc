@@ -35,10 +35,11 @@ class EpixWatchFaceView extends Ui.WatchFace {
     // ---- Paleta "hueso y ámbar" ----
     // Pensada para AMOLED: negro puro de fondo (píxel apagado, contraste
     // infinito, cero consumo) y la tinta en el mismo eje cálido.
-    // El enlace iba apagado, tratándolo como gramática de relleno. Error: "Y"
-    // frente a "MENOS" son MEDIA HORA de diferencia, así que es la palabra más
-    // informativa de las tres. Ahora va en el mismo ámbar vivo que los minutos
-    // y casi igual de grande, de modo que "Y CUARTO" se lee como un bloque.
+    // El enlace iba apagado y más pequeño, tratándolo como gramática de
+    // relleno. Error: "Y" frente a "MENOS" son MEDIA HORA de diferencia, así
+    // que es la palabra más informativa de las tres. Ahora va en el mismo
+    // ámbar vivo y al mismo cuerpo que los minutos, de modo que "Y CUARTO" se
+    // lee como un bloque.
     private const COLOR_BG   = Gfx.COLOR_BLACK;
     private const COLOR_HOUR = 0xF3E7D3; // hueso
     private const COLOR_LINK = 0xFFB020; // ámbar vivo
@@ -66,9 +67,11 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const YA4_MIN2 = 0.825;
 
     // Fuentes (Connect IQ no escala en ejecución: un cuerpo, un atlas).
-    private var mWord;    // 116 — líneas grandes con 3 líneas
-    private var mWordS;   // 100 — líneas grandes con 4 líneas
-    private var mLink;    // 100 — enlace
+    // TODAS las líneas de un mismo reparto van al mismo cuerpo, enlace
+    // incluido: teniéndolo más pequeño, la palabra más informativa de la frase
+    // era además la menos legible.
+    private var mWord;    // 116 — las tres líneas del reparto de 3
+    private var mWordS;   // 100 — las cuatro líneas del reparto de 4
     private var mWordA;   // 68  — Always-On, LAS TRES líneas
 
     function initialize() {
@@ -78,7 +81,6 @@ class EpixWatchFaceView extends Ui.WatchFace {
     function onLayout(dc) {
         mWord  = Ui.loadResource(Rez.Fonts.Word);
         mWordS = Ui.loadResource(Rez.Fonts.WordS);
-        mLink  = Ui.loadResource(Rez.Fonts.Link);
         mWordA = Ui.loadResource(Rez.Fonts.WordA);
     }
 
@@ -109,12 +111,12 @@ class EpixWatchFaceView extends Ui.WatchFace {
         if (mins.equals("VEINTICINCO")) {
             // Cuatro líneas: la palabra larga partida por sílabas.
             line(dc, cx, h, Y4_HOUR, hourWord, mWordS, COLOR_HOUR);
-            line(dc, cx, h, Y4_LINK, link,     mLink,  COLOR_LINK);
+            line(dc, cx, h, Y4_LINK, link,     mWordS, COLOR_LINK);
             line(dc, cx, h, Y4_MIN1, "VEINTI", mWordS, COLOR_MIN);
             line(dc, cx, h, Y4_MIN2, "CINCO",  mWordS, COLOR_MIN);
         } else {
             line(dc, cx, h, Y3_HOUR, hourWord, mWord, COLOR_HOUR);
-            line(dc, cx, h, Y3_LINK, link,     mLink, COLOR_LINK);
+            line(dc, cx, h, Y3_LINK, link,     mWord, COLOR_LINK);
             line(dc, cx, h, Y3_MIN,  mins,     mWord, COLOR_MIN);
         }
     }

@@ -22,7 +22,7 @@ R_ORB, R_DOT = 211, 11
 DEG_PER_BEAT = 12.0
 TRAVEL_BEATS, MERGE_BEATS = 15.0, 3.0
 CYCLE = TRAVEL_BEATS + MERGE_BEATS
-TRAIL_DOTS, TRAIL_SECS = 8, 1.5
+TRAIL_DOTS, TRAIL_OVERLAP = 8, 1.15
 
 HR = int(sys.argv[1]) if len(sys.argv) > 1 else 95
 
@@ -90,17 +90,20 @@ def burst(d, deg, radius, fade):
             dot(d, deg, rr, hsv(i / float(n), 1.0, fade))
 
 
-def draw_pulse(d, beats, hr):
+def draw_pulse(d, beats, hr, dt=1.0, fase="viaje"):
+    """fase 'viaje' se dibuja antes que los textos; 'choque', despues."""
     bps = hr / 60.0
     cyc = int(beats // CYCLE)
     p = beats - cyc * CYCLE
     s = 1 if cyc % 2 == 0 else -1
     start = 0.0 if cyc % 2 == 0 else 180.0
 
-    if p < TRAVEL_BEATS:
+    if fase == "viaje" and p < TRAVEL_BEATS:
         t = p / TRAVEL_BEATS
         adv = DEG_PER_BEAT * p
-        span = min(DEG_PER_BEAT * bps * TRAIL_SECS, adv)
+        # la estela cubre lo avanzado desde el fotograma anterior, no un
+        # tiempo fijo: asi empalma con el trazo de la vez pasada
+        span = min(DEG_PER_BEAT * bps * dt * TRAIL_OVERLAP, adv)
         for i in range(TRAIL_DOTS, 0, -1):
             f = i / float(TRAIL_DOTS)
             back = span * f
@@ -111,7 +114,7 @@ def draw_pulse(d, beats, hr):
             dot(d, start - s * (adv - back), rr, orb_color(tk, False, dim))
         head(d, start + s * adv, t, True)
         head(d, start - s * adv, t, False)
-    else:
+    elif fase == "choque" and p >= TRAVEL_BEATS:
         m = (p - TRAVEL_BEATS) / MERGE_BEATS
         meet = start + 180.0
         R = merge_radius(hr)
@@ -126,13 +129,14 @@ def face(beats, hr):
     img = Image.new("RGBA", (S, S), (0, 0, 0, 255))
     d = ImageDraw.Draw(img)
     cx = S // 2
-    draw_pulse(d, beats, hr)                 # por debajo del texto
+    draw_pulse(d, beats, hr, fase="viaje")   # el viaje, por debajo del texto
     d.text((cx, int(S * Y_WDAY)), "LUN", font=f_mon, fill=GREEN, anchor="mm")
     tab_time(d, cx, int(S * Y_TIME), "9:24", WHITE, f_time)
     numW = f_num.getlength("9"); gap = 14
     x0 = cx - (numW + gap + f_mon.getlength("AGO")) / 2
     d.text((x0, int(S * Y_DATE)), "9", font=f_num, fill=GREEN, anchor="lm")
     d.text((x0 + numW + gap, int(S * Y_DATE)), "AGO", font=f_mon, fill=BLUE, anchor="lm")
+    draw_pulse(d, beats, hr, fase="choque")  # el choque, por encima
     mask = Image.new("L", (S, S), 0)
     ImageDraw.Draw(mask).ellipse([0, 0, S - 1, S - 1], fill=255)
     img.putalpha(mask); return img

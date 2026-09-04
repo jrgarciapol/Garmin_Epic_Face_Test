@@ -4,6 +4,5 @@
          usan las palabras de la hora, así que los atlas son diminutos. -->
     <font id="Word"  filename="Word.fnt"  antialias="true"/>
     <font id="WordS" filename="WordS.fnt" antialias="true"/>
-    <font id="Link"  filename="Link.fnt"  antialias="true"/>
     <font id="WordA" filename="WordA.fnt" antialias="true"/>
 </fonts>

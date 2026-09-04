@@ -23,10 +23,8 @@ WORD_CHARS = "ACDEHIMNOPRSTUVYZ"
 # (id, archivo ttf, tamaño px, caracteres, tabular)
 # Connect IQ no sabe escalar una fuente en tiempo de ejecucion: cada cuerpo es
 # un atlas propio. Por eso hay tres, y solo tres:
-#   Word  -> las dos lineas grandes cuando la frase cabe en 3 lineas
-#   WordS -> las tres lineas grandes cuando VEINTICINCO obliga a usar 4
-#   Link  -> la linea del enlace (Y / MENOS / EN). Casi tan grande como
-#            las otras: 'y' frente a 'menos' son media hora de diferencia
+#   Word  -> LAS TRES lineas cuando la frase cabe en 3 (enlace incluido)
+#   WordS -> LAS CUATRO lineas cuando VEINTICINCO obliga a usar 4
 #   WordA -> el Always-On entero, LAS TRES LINEAS AL MISMO CUERPO. Con el
 #            enlace mas pequeno que las otras dos costaba leerlo justo donde
 #            mas importa. Igualando a 68 el caso peor mide 9,31%, por debajo
@@ -34,7 +32,6 @@ WORD_CHARS = "ACDEHIMNOPRSTUVYZ"
 JOBS = [
     ("Word",  "Barriecito-Regular.ttf", 116, WORD_CHARS, False),
     ("WordS", "Barriecito-Regular.ttf", 100, WORD_CHARS, False),
-    ("Link",  "Barriecito-Regular.ttf", 100, WORD_CHARS, False),
     ("WordA", "Barriecito-Regular.ttf", 68,  WORD_CHARS, False),
 ]
 
