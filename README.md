@@ -62,14 +62,17 @@ por segundo en alto consumo y solo una vez por minuto en reposo. En Always-On
 no se dibuja el orbe.
 
 En **`Pulso/`** dos orbes nacen blancos del mismo punto y recorren media vuelta
-en sentidos opuestos, ganando color (uno hacia rojos, otro hacia azules). La
+en sentidos opuestos, ganando color: uno hacia el **naranja** y otro hacia el
+**cian**, elegidos para que los dos luzcan igual (antes eran rojo y azul, y el
+azul se veía el doble). La
 **velocidad la marca el pulso**, y la **estela se estira** en proporción: cubre
 el arco recorrido entre fotogramas, así que a 1 fps se lee como un trazo
 continuo en vez de puntos sueltos. Cada punto de la estela conserva el tono que
 tuvo la cabeza en ese instante.
 
-Al encontrarse estalla, **por delante de los textos**, un orbe de **anillos de
-arcoíris cuyo tamaño crece con las pulsaciones**, sin tope: a 60 ppm es un
+Al encontrarse estalla, **por delante de los textos**, un orbe de **anillos con
+los colores de los dos orbes fundiéndose** —frío fuera, cálido después, núcleo
+blanco— **cuyo tamaño crece con las pulsaciones**, sin tope: a 60 ppm es un
 destello discreto y a 160 ppm invade la esfera y tapa la hora unos segundos, a
 propósito, para que no pase desapercibido. Después colapsa y los orbes renacen con los sentidos invertidos.
 

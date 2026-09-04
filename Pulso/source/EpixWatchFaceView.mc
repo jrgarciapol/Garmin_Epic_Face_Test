@@ -14,8 +14,9 @@ using Toybox.Application as App;
 //!
 //!   INTERACTIVA (mirando el reloj):
 //!     - Dos orbes nacen del mismo punto, blancos, y recorren media vuelta en
-//!       sentidos opuestos. Al alejarse ganan color: uno hacia los rojos y el
-//!       otro hacia los azules.
+//!       sentidos opuestos. Al alejarse ganan color: uno hacia el naranja y el
+//!       otro hacia el cian, elegidos para que los dos luzcan IGUAL (ver
+//!       H_WARM / H_COOL).
 //!     - La VELOCIDAD la marca el pulso (grados por latido fijos), así que a
 //!       más pulsaciones, más rápido giran y antes chocan.
 //!     - La ESTELA cubre 1,5 s de recorrido (nunca menos que el paso del
@@ -23,8 +24,9 @@ using Toybox.Application as App;
 //!       ese instante. Esa longitud importa: a mitad de camino los orbes pasan
 //!       por detrás de la hora y, con hora de dos cifras, la cabeza queda
 //!       tapada por los dígitos. La cola larga asoma por arriba y por abajo.
-//!     - Al encontrarse estalla un orbe de anillos de arcoíris, este sí POR
-//!       DELANTE de los textos, cuyo TAMAÑO es proporcional al pulso: a 60 ppm
+//!     - Al encontrarse estalla un orbe de anillos con los colores de los dos
+//!       orbes fundiéndose (frío fuera, cálido después, núcleo blanco), este sí
+//!       POR DELANTE de los textos, y de TAMAÑO proporcional al pulso: a 60 ppm
 //!       es un destello discreto; a 160 ppm invade la esfera y tapa la hora
 //!       unos segundos, a propósito, para que no puedas ignorarlo.
 //!     - Después colapsa a nada y renacen dos orbes en el punto del choque,
@@ -74,6 +76,14 @@ class EpixWatchFaceView extends Ui.WatchFace {
     // --- Parámetros de los orbes ---
     private const R_ORB = 211;          // radio de la órbita (borde del dial)
     private const R_DOT = 11;           // radio del orbe
+    // Tonos de los dos orbes. El cálido era rojo puro (h=0) y el frío azul
+    // (h=0.58), y no se veían igual: medidos, 21,3% de luminancia frente a
+    // 44,5%, o sea que el frío lucía el DOBLE. Naranja y cian los dejan en
+    // 58,5% y 60,5% — relación 1,03 a 1 — sin tocar la idea de "uno hacia
+    // cálidos, otro hacia fríos". De paso el cian se separa del azul del mes,
+    // que antes era casi el mismo color que el orbe frío.
+    private const H_WARM = 0.07;        // naranja, #FF8126 al final del viaje
+    private const H_COOL = 0.53;        // cian,    #00C0EB al final del viaje
     private const DEG_PER_BEAT = 12.0;  // velocidad: grados que avanza por latido
     private const TRAVEL_BEATS = 15.0;  // 180 / DEG_PER_BEAT = media vuelta
     private const MERGE_BEATS  = 3.0;   // duración del choque + colapso
@@ -259,7 +269,11 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var tt = t;
         if (tt < 0.0) { tt = 0.0; }
         if (tt > 1.0) { tt = 1.0; }
-        return hsvColor(warm ? 0.0 : 0.58, Math.pow(tt, 0.7), v);
+        var sat = Math.pow(tt, 0.7);
+        if (warm) {
+            return hsvColor(H_WARM, sat * 0.85, v);
+        }
+        return hsvColor(H_COOL, sat, v * 0.92);
     }
 
     //! Radio del estallido: proporcional al pulso, sin tope útil. A 160 ppm
@@ -291,7 +305,13 @@ class EpixWatchFaceView extends Ui.WatchFace {
         dc.fillCircle(x, y, R_DOT);
     }
 
-    //! Estallido del choque: anillos concéntricos de arcoíris, de fuera adentro.
+    //! Estallido del choque: anillos concéntricos con LOS COLORES DE LOS DOS
+    //! ORBES fundiéndose — frío por fuera, cálido después y núcleo blanco.
+    //!
+    //! Antes era un arcoíris de siete tonos. Dos motivos para cambiarlo: no
+    //! tenía nada que ver con los dos orbes que acababan de chocar, y su
+    //! brillo daba tumbos (del 13% del anillo violeta al 83% del amarillo),
+    //! así que el estallido no crecía: parpadeaba.
     private function drawBurst(dc, cx, cy, deg, radius, fade) {
         if (radius < 1) { return; }
         var x = orbX(cx, deg);
@@ -300,7 +320,14 @@ class EpixWatchFaceView extends Ui.WatchFace {
         for (var i = 0; i < n; i += 1) {
             var rr = (radius * (1.0 - i * 1.0 / n)).toNumber();
             if (rr < 1) { continue; }
-            dc.setColor(hsvColor(i * 1.0 / n, 1.0, fade), Gfx.COLOR_TRANSPARENT);
+            var f = i * 1.0 / (n - 1);      // 0 = anillo exterior, 1 = núcleo
+            var col;
+            if (f < 0.5) {                  // del frío al cálido
+                col = hsvColor(H_COOL + (H_WARM - H_COOL) * (f / 0.5), 1.0, fade);
+            } else {                        // del cálido al blanco
+                col = hsvColor(H_WARM, 1.0 - (f - 0.5) / 0.5, fade);
+            }
+            dc.setColor(col, Gfx.COLOR_TRANSPARENT);
             dc.fillCircle(x, y, rr);
         }
     }

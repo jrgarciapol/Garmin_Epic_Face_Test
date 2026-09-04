@@ -38,9 +38,13 @@ def hsv(h, s, v):
     return (int(r * 255), int(g * 255), int(b * 255))
 
 
+H_WARM, H_COOL = 0.07, 0.53   # naranja y cian, igualados en luminancia
+
+
 def orb_color(t, warm, v=1.0):
     t = max(0.0, min(1.0, t))
-    return hsv(0.0 if warm else 0.58, t ** 0.7, v)
+    s = t ** 0.7
+    return hsv(H_WARM, s * 0.85, v) if warm else hsv(H_COOL, s, v * 0.92)
 
 
 def dot_radius(hr):
@@ -88,11 +92,20 @@ def head(d, deg, t, warm, r_dot):
 
 
 def burst(d, deg, radius, fade):
+    """Los colores de los dos orbes fundiendose: frio fuera, calido despues,
+    nucleo blanco. Antes era un arcoiris, ajeno a los orbes y con el brillo
+    dando tumbos (13% del anillo violeta al 83% del amarillo)."""
     n = 7
     for i in range(n):
         rr = radius * (1.0 - i / float(n))
-        if rr >= 1:
-            dot(d, deg, rr, hsv(i / float(n), 1.0, fade))
+        if rr < 1:
+            continue
+        f = i / float(n - 1)
+        if f < 0.5:
+            col = hsv(H_COOL + (H_WARM - H_COOL) * (f / 0.5), 1.0, fade)
+        else:
+            col = hsv(H_WARM, 1.0 - (f - 0.5) / 0.5, fade)
+        dot(d, deg, rr, col)
 
 
 def draw_pulse(d, beats, hr, dt=1.0, fase="viaje"):

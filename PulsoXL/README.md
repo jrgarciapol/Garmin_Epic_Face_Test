@@ -44,3 +44,28 @@ de los números y el orbe se sigue viendo; acortándola, desaparece en ese tramo
 
 Con hora de una cifra (`9:24`) el texto solo llega a x=62..392 y no tapa nada —
 por eso el problema no se ve si solo pruebas con esas horas.
+
+## Los colores de los orbes y del choque
+
+Medida la paleta anterior, salían dos problemas:
+
+| | Color | Luminancia |
+|---|---|---|
+| Orbe cálido | `#FF0000` rojo puro | **21,3%** |
+| Orbe frío | `#0085FF` azul | **44,5%** |
+
+El frío lucía **2,09 veces más** que el cálido, y el rojo puro era lo más
+oscuro de toda la esfera. Además el orbe frío y el mes (`#1E9BFF`) eran
+prácticamente el mismo color: 30 puntos de diferencia en rojo, 22 en verde y
+cero en azul.
+
+Ahora el cálido va al **naranja** (`H_WARM` = 0.07, `#FF8126` al final del
+viaje) y el frío al **cian** (`H_COOL` = 0.53, `#00C0EB`): **58,5%** y
+**60,5%**, relación **1,03 a 1**. La idea de «uno hacia cálidos, otro hacia
+fríos» no cambia; solo se corrige que uno se viera el doble que el otro.
+
+El **estallido** era un arcoíris de siete tonos. No tenía nada que ver con los
+dos orbes que acababan de chocar, y su brillo daba tumbos —del **13,3%** del
+anillo violeta al **82,7%** del amarillo—, así que no crecía: parpadeaba. Ahora
+son los colores de los propios orbes fundiéndose: **frío por fuera, cálido
+después y núcleo blanco**.
