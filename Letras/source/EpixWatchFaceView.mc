@@ -22,8 +22,8 @@ using Toybox.Time.Gregorian as Calendar;
 //!      es la hora en curso, sino la siguiente. Es correcto, pero despista los
 //!      primeros días.
 //!
-//! Reparto: hora arriba en hueso, enlace en medio en ámbar apagado, minutos
-//! abajo en ámbar vivo. Fondo negro puro, que en AMOLED es píxel apagado.
+//! Reparto: hora arriba en hueso, enlace y minutos en ámbar vivo. Fondo negro
+//! puro, que en AMOLED es píxel apagado.
 //!
 //! VEINTICINCO es casi el doble de larga que cualquier otra palabra, así que
 //! se parte en VEINTI / CINCO y esos dos ratos del día usan cuatro líneas. Sin
@@ -69,8 +69,7 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private var mWord;    // 116 — líneas grandes con 3 líneas
     private var mWordS;   // 100 — líneas grandes con 4 líneas
     private var mLink;    // 100 — enlace
-    private var mWordA;   // 72  — Always-On
-    private var mLinkA;   // 50  — Always-On, enlace
+    private var mWordA;   // 68  — Always-On, LAS TRES líneas
 
     function initialize() {
         WatchFace.initialize();
@@ -81,7 +80,6 @@ class EpixWatchFaceView extends Ui.WatchFace {
         mWordS = Ui.loadResource(Rez.Fonts.WordS);
         mLink  = Ui.loadResource(Rez.Fonts.Link);
         mWordA = Ui.loadResource(Rez.Fonts.WordA);
-        mLinkA = Ui.loadResource(Rez.Fonts.LinkA);
     }
 
     function onUpdate(dc) {
@@ -122,10 +120,13 @@ class EpixWatchFaceView extends Ui.WatchFace {
     }
 
     //! ---- Presentación ALWAYS-ON ----
-    //! Llevado al máximo que permite el techo del 10% de píxeles encendidos:
-    //! el caso peor (DIEZ MENOS VEINTI CINCO) mide 9,07%. Para poder subir el
-    //! cuerpo hasta ahí, aquí también se parte VEINTICINCO en dos líneas; con
-    //! la palabra entera habría que quedarse bastante más pequeño.
+    //! LAS TRES LÍNEAS VAN AL MISMO CUERPO. Tenerlas a distinto tamaño hacía
+    //! que el enlace, que es la palabra más informativa, fuera además la menos
+    //! legible. Igualadas a 68, el caso peor (CUATRO MENOS VEINTI CINCO) mide
+    //! 9,31%, por debajo del techo del 10% de píxeles encendidos.
+    //! Para poder subir el cuerpo hasta ahí, aquí también se parte
+    //! VEINTICINCO en dos líneas; con la palabra entera manda el ancho y hay
+    //! que quedarse bastante más pequeño.
     //! El bloque se desplaza unos píxeles cada minuto para repartir el
     //! desgaste del AMOLED.
     private function drawAod(dc, now) {
@@ -143,12 +144,12 @@ class EpixWatchFaceView extends Ui.WatchFace {
 
         if (mins.equals("VEINTICINCO")) {
             drawAt(dc, cx, (h * YA4_HOUR).toNumber() + dy, hourWord, mWordA, COLOR_HOUR);
-            drawAt(dc, cx, (h * YA4_LINK).toNumber() + dy, link,     mLinkA, COLOR_LINK);
+            drawAt(dc, cx, (h * YA4_LINK).toNumber() + dy, link,     mWordA, COLOR_LINK);
             drawAt(dc, cx, (h * YA4_MIN1).toNumber() + dy, "VEINTI", mWordA, COLOR_MIN);
             drawAt(dc, cx, (h * YA4_MIN2).toNumber() + dy, "CINCO",  mWordA, COLOR_MIN);
         } else {
             drawAt(dc, cx, (h * YA3_HOUR).toNumber() + dy, hourWord, mWordA, COLOR_HOUR);
-            drawAt(dc, cx, (h * YA3_LINK).toNumber() + dy, link,     mLinkA, COLOR_LINK);
+            drawAt(dc, cx, (h * YA3_LINK).toNumber() + dy, link,     mWordA, COLOR_LINK);
             drawAt(dc, cx, (h * YA3_MIN).toNumber() + dy,  mins,     mWordA, COLOR_MIN);
         }
     }

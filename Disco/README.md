@@ -1,8 +1,14 @@
-# Epix Disco — analógica minimalista, fondo ámbar
+# Epix Disco — analógica minimalista, ámbar sobre negro
 
-Adaptación al Epix Pro 51 mm de un reloj de disco: fondo liso, doce marcas
-discretas, dos agujas que nacen anchas en la cola y acaban en punta, un disco
-central oscuro y un pivote. **Sin cifras, sin fecha y sin segundero.**
+Adaptación al Epix Pro 51 mm de un reloj de disco: doce marcas, dos agujas que
+nacen anchas en la cola y acaban en punta, un disco central y un pivote. **Sin
+cifras, sin fecha y sin segundero.**
+
+El diseño original tenía el **fondo claro** y así se programó al principio. Se
+invirtió: un fondo claro enciende el 100% de la pantalla, era **imposible en
+Always-On** (techo del 10%) y obligaba a que la esfera pasara de blanco a negro
+cada vez que bajas la muñeca, con su fogonazo. Con el ámbar en la tinta, reposo
+e interactiva son **la misma imagen** con distinto brillo.
 
 Es la única esfera del banco de pruebas que **no usa ninguna fuente**: todo son
 polígonos y círculos.
@@ -16,7 +22,7 @@ polígonos y círculos.
 | `linearGradient` en las agujas | **No existe.** Sustituido por el bisel de arriba |
 | `radialGradient` del disco | Siete círculos concéntricos, cada uno más oscuro y ligeramente descentrado. La banda es de 3 px y no se aprecia |
 | `radialGradient` del fondo | **No existe** y por anillos se ven escalones: fondo plano |
-| `feDropShadow` | Una copia de la aguja desplazada 2-3 px en un ámbar más oscuro. Sombra dura, pero a distancia de muñeca cuela |
+| `feDropShadow` | **Se cayó al invertir la esfera**: sobre negro, una copia desplazada de la aguja en un tono más oscuro es invisible |
 | Minutero con milisegundos | El minutero se recalcula cada segundo. Avanza 0,1°/s: imperceptible |
 
 Las puntas finas dependen de **`dc.setAntiAlias(true)`**, que el Epix Pro
@@ -72,14 +78,13 @@ rectángulo dibujado con `fillPolygon`, igual que las agujas.
 
 ## Always-On
 
-El fondo ámbar encendería el **100%** de la pantalla y el límite del AMOLED son
-el **10%** de píxeles. Así que en reposo la esfera **se invierte**: fondo negro
-y las mismas agujas en ámbar, con las marcas atenuadas. Medido: **4,78%** de
-píxeles encendidos, de sobra. El conjunto se desplaza unos píxeles cada minuto
-para repartir el desgaste.
+Lo mismo que la interactiva, con las marcas atenuadas. Medido: **4,78%** de
+píxeles encendidos, muy por debajo del techo del 10%. El conjunto se desplaza
+unos píxeles cada minuto para repartir el desgaste.
 
 ## Colores
 
-Están todos juntos al principio de `source/EpixWatchFaceView.mc`. Cambiar
-`COLOR_BG` a `0xEEEFEE` deja la versión blanca del diseño original; el resto de
-la paleta aguanta el cambio sin tocar nada más.
+Están todos juntos al principio de `source/EpixWatchFaceView.mc`. Para volver
+al fondo claro del diseño original hay que cambiar `COLOR_BG` a `0xF7C81E` y
+además invertir la tinta (`COLOR_INK` a `0x181A1A`, `COLOR_BEVEL` a `0x343536`
+y las marcas a tonos oscuros) — el fondo solo no basta.

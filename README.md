@@ -47,6 +47,10 @@ entre 5 posiciones según el minuto para repartir el desgaste del AMOLED.
 | `Pulso/`  | Barriecito + dos orbes que giran al ritmo del corazón | Epix Pulso |
 | `PulsoXL/`| Igual que Pulso, pero los orbes **engordan** con el pulso | Epix Pulso XL |
 
+En `PulsoXL/` el **choque se dibuja por delante de los textos** y la **estela
+mide el arco recorrido desde el fotograma anterior**, no un tiempo fijo. Ver
+`PulsoXL/README.md`.
+
 El orbe avanza **6° por segundo** (una vuelta por minuto) dejando una estela de
 5 puntos, y su **tono recorre el espectro** en cada vuelta. Se dibuja antes que
 los textos, así que pasa **por detrás** de la hora. Los tamaños de la esfera
@@ -81,17 +85,18 @@ tampoco la hay, usa 60 ppm.
 
 | Carpeta | Estilo | App |
 |---|---|---|
-| `Disco/` | Analógica minimalista, fondo ámbar, sin cifras | Epix Disco |
+| `Disco/` | Analógica minimalista, ámbar sobre negro, sin cifras | Epix Disco |
 
 Adaptación de un reloj de disco: dos agujas afiladas, doce marcas y un disco
 central. La única esfera del banco que **no usa ninguna fuente** — todo son
-polígonos y círculos. Monkey C no tiene degradados ni sombras difuminadas, así
-que el volumen se finge con un bisel más claro en media aguja, anillos
-concéntricos en el disco y una sombra desplazada 2-3 px.
+polígonos y círculos. Monkey C no tiene degradados, así que el volumen se finge
+con un bisel más claro en media aguja y anillos concéntricos en el disco.
 
-Su **Always-On invierte la esfera**: el fondo ámbar encendería el 100% de la
-pantalla y el techo es el 10%, así que en reposo pasa a fondo negro con las
-agujas en ámbar (4,78% de píxeles). Detalle en `Disco/README.md`.
+El diseño original tenía el fondo claro; **se invirtió** porque encendía el 100%
+de la pantalla, era imposible en Always-On (techo del 10%) y obligaba a un
+fogonazo de blanco a negro cada vez que bajas la muñeca. Ahora reposo e
+interactiva son la misma imagen: 4,78% de píxeles. Detalle en
+`Disco/README.md`.
 
 ## Variante en palabras
 
@@ -107,8 +112,8 @@ Paleta **hueso y ámbar** sobre negro puro: la hora en hueso, y el enlace y los
 minutos en ámbar vivo, para que «Y CUARTO» se lea como un bloque — «y» frente a
 «menos» son media hora de diferencia, así que el enlace no puede ceder.
 VEINTICINCO se parte en dos líneas porque es casi el doble de larga que el
-resto. Su Always-On va al máximo que permite el techo del 10% de píxeles: 9,05%
-en el caso peor. Detalle en `Letras/README.md`.
+resto. En su Always-On **las tres líneas van al mismo cuerpo** (68), llevado al
+máximo que permite el techo del 10% de píxeles: 9,28% en el caso peor. Detalle en `Letras/README.md`.
 
 ## Cómo compilar una
 

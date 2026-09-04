@@ -22,13 +22,13 @@ using Toybox.Application as App;
 //!     - El TAMAÑO del orbe lo marca el pulso: de 9 px de radio en reposo a
 //!       29 px a 160 ppm (ver dotRadius). La estela engorda con él, así que en
 //!       esfuerzo el trazo pasa de hilo fino a brochazo.
-//!     - La ESTELA se estira en proporción a esa velocidad y cada punto lleva
-//!       el tono que tuvo la cabeza en ese instante: es el registro del viaje.
-//!       Además tapa los saltos del refresco de 1 fps.
-//!     - Al encontrarse estalla un orbe de anillos de arcoíris cuyo TAMAÑO es
-//!       proporcional al pulso: a 60 ppm es un destello discreto; a 160 ppm
-//!       invade la esfera y tapa la hora unos segundos, a propósito, para que
-//!       no puedas ignorarlo.
+//!     - La ESTELA cubre justo el arco recorrido desde el fotograma anterior,
+//!       así que tapa el salto del refresco sea cual sea su ritmo, y cada
+//!       punto lleva el tono que tuvo la cabeza en ese instante.
+//!     - Al encontrarse estalla un orbe de anillos de arcoíris, este sí POR
+//!       DELANTE de los textos, cuyo TAMAÑO es proporcional al pulso: a 60 ppm
+//!       es un destello discreto; a 160 ppm invade la esfera y tapa la hora
+//!       unos segundos, a propósito, para que no puedas ignorarlo.
 //!     - Después colapsa a nada y renacen dos orbes en el punto del choque,
 //!       cada uno con el sentido contrario al que traía.
 //!     - Día de la semana arriba, hora grande (Barriecito 196) y fecha abajo.
@@ -83,7 +83,8 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const CYCLE_BEATS  = 18.0;  // TRAVEL + MERGE
     private const TRAIL_DOTS   = 8;     // puntos de estela (ajustado al
                                         // presupuesto de tiempo de onUpdate)
-    private const TRAIL_SECS   = 1.5;   // segundos de pasado que cubre la estela
+    private const TRAIL_OVERLAP = 1.15; // solape entre la estela de un
+                                        // fotograma y la del siguiente
 
     function initialize() {
         WatchFace.initialize();
@@ -160,8 +161,15 @@ class EpixWatchFaceView extends Ui.WatchFace {
         if (mBeats > 2 * CYCLE_BEATS) {
             mBeats -= 2 * CYCLE_BEATS;
         }
-        // Los orbes van primero: así pasan POR DETRÁS de los textos.
-        drawPulse(dc, hr);
+
+        var cyc = (mBeats / CYCLE_BEATS).toNumber();
+        var p = mBeats - cyc * CYCLE_BEATS;
+
+        // El VIAJE va por detrás de los textos: los orbes cruzan la hora sin
+        // taparla.
+        if (p < TRAVEL_BEATS) {
+            drawTravel(dc, hr, dt, cyc, p);
+        }
 
         drawWeekday(dc, now.day_of_week);
 
@@ -169,6 +177,16 @@ class EpixWatchFaceView extends Ui.WatchFace {
                     formatTime(now.hour, now.min), mTimeFont, COLOR_TIME);
 
         drawDayMonth(dc, cx, (h * Y_DATE).toNumber(), now.day, now.month);
+
+        // El CHOQUE, en cambio, va por DELANTE. Los dos puntos de encuentro son
+        // simétricos, pero detrás de uno está "LUN" y detrás del otro "9 AGO":
+        // dibujado por debajo, el estallido de arriba y el de abajo salían
+        // recortados de forma distinta y no parecían el mismo efecto. Por
+        // delante son idénticos, y además tapar la hora un segundo era
+        // justamente la intención del choque.
+        if (p >= TRAVEL_BEATS) {
+            drawImpact(dc, hr, cyc, p);
+        }
     }
 
     //! ---- Presentación ALWAYS-ON (solo la hora) ----
@@ -303,60 +321,75 @@ class EpixWatchFaceView extends Ui.WatchFace {
         }
     }
 
-    //! Los dos orbes: viaje en sentidos opuestos, choque y colapso.
-    private function drawPulse(dc, hr) {
+    //! El VIAJE: los dos orbes yendo en sentidos opuestos, con su estela.
+    //! Se dibuja ANTES que los textos, así que pasa por detrás de la hora.
+    private function drawTravel(dc, hr, dt, cyc, p) {
         var cx = dc.getWidth() / 2;
         var cy = dc.getHeight() / 2;
         var bps = hr / 60.0;
         var rDot = dotRadius(hr);          // el tamaño también lo marca el pulso
 
-        var cyc = (mBeats / CYCLE_BEATS).toNumber();
-        var p = mBeats - cyc * CYCLE_BEATS;
         // El sentido se invierte en cada ciclo, y el punto de partida es el
         // del choque anterior: así alternan arriba <-> abajo.
         var s = (cyc % 2 == 0) ? 1 : -1;
         var start = (cyc % 2 == 0) ? 0.0 : 180.0;
 
-        if (p < TRAVEL_BEATS) {
-            var t = p / TRAVEL_BEATS;
-            var adv = DEG_PER_BEAT * p;
-            // La estela cubre lo recorrido en los últimos TRAIL_SECS: cuanto
-            // más rápido (más pulso), más larga. Nunca antes del nacimiento.
-            var span = DEG_PER_BEAT * bps * TRAIL_SECS;
-            if (span > adv) { span = adv; }
+        var t = p / TRAVEL_BEATS;
+        var adv = DEG_PER_BEAT * p;
 
-            for (var i = TRAIL_DOTS; i >= 1; i -= 1) {
-                var f = i * 1.0 / TRAIL_DOTS;
-                var back = span * f;
-                var tk = t - back / 180.0;          // avance en aquel instante
-                var rr = (rDot * (0.30 + 0.55 * (1 - f))).toNumber();
-                var dim = 0.25 + 0.55 * (1 - f);
-                if (rr >= 1) {
-                    var d1 = start + s * (adv - back);
-                    var d2 = start - s * (adv - back);
-                    dc.setColor(orbColor(tk, true, dim), Gfx.COLOR_TRANSPARENT);
-                    dc.fillCircle(orbX(cx, d1), orbY(cy, d1), rr);
-                    dc.setColor(orbColor(tk, false, dim), Gfx.COLOR_TRANSPARENT);
-                    dc.fillCircle(orbX(cx, d2), orbY(cy, d2), rr);
-                }
+        // La estela cubre EXACTAMENTE el arco recorrido desde el fotograma
+        // anterior (por eso `dt`), con un pelín de solape para que un trazo
+        // empalme con el siguiente.
+        //
+        // Antes cubría un tiempo fijo de 1,5 s, y ahí estaba el problema de
+        // los primeros segundos: al levantar la muñeca el sistema encadena
+        // varios onUpdate muy seguidos, así que la cabeza avanzaba una pizca
+        // mientras la estela seguía midiendo 1,5 s. El resultado era un
+        // borrón largo que apenas se movía — se leía como "va lento y pastoso"
+        // hasta que el refresco se asentaba en uno por segundo.
+        var span = DEG_PER_BEAT * bps * dt * TRAIL_OVERLAP;
+        if (span > adv) { span = adv; }
+
+        for (var i = TRAIL_DOTS; i >= 1; i -= 1) {
+            var f = i * 1.0 / TRAIL_DOTS;
+            var back = span * f;
+            var tk = t - back / 180.0;          // avance en aquel instante
+            var rr = (rDot * (0.30 + 0.55 * (1 - f))).toNumber();
+            var dim = 0.25 + 0.55 * (1 - f);
+            if (rr >= 1) {
+                var d1 = start + s * (adv - back);
+                var d2 = start - s * (adv - back);
+                dc.setColor(orbColor(tk, true, dim), Gfx.COLOR_TRANSPARENT);
+                dc.fillCircle(orbX(cx, d1), orbY(cy, d1), rr);
+                dc.setColor(orbColor(tk, false, dim), Gfx.COLOR_TRANSPARENT);
+                dc.fillCircle(orbX(cx, d2), orbY(cy, d2), rr);
             }
-            drawHead(dc, cx, cy, start + s * adv, t, true, rDot);
-            drawHead(dc, cx, cy, start - s * adv, t, false, rDot);
-        } else {
-            var m = (p - TRAVEL_BEATS) / MERGE_BEATS;
-            var meet = start + 180.0;
-            var bigR = mergeRadius(hr);
-            var radius;
-            var fade = 1.0;
-            if (m < 0.28) {                        // impacto: crece de golpe
-                radius = rDot + (bigR - rDot) * (m / 0.28);
-            } else {                               // colapso hasta desaparecer
-                var q = (m - 0.28) / 0.72;
-                radius = bigR * Math.pow(1.0 - q, 1.6);
-                fade = 1.0 - 0.5 * q;
-            }
-            drawBurst(dc, cx, cy, meet, radius, fade);
         }
+        drawHead(dc, cx, cy, start + s * adv, t, true, rDot);
+        drawHead(dc, cx, cy, start - s * adv, t, false, rDot);
+    }
+
+    //! El CHOQUE: crece de golpe y colapsa hasta desaparecer. Se dibuja
+    //! DESPUÉS que los textos, por delante de todo (ver drawInteractive).
+    private function drawImpact(dc, hr, cyc, p) {
+        var cx = dc.getWidth() / 2;
+        var cy = dc.getHeight() / 2;
+        var rDot = dotRadius(hr);
+        var start = (cyc % 2 == 0) ? 0.0 : 180.0;
+
+        var m = (p - TRAVEL_BEATS) / MERGE_BEATS;
+        var meet = start + 180.0;
+        var bigR = mergeRadius(hr);
+        var radius;
+        var fade = 1.0;
+        if (m < 0.28) {                        // impacto: crece de golpe
+            radius = rDot + (bigR - rDot) * (m / 0.28);
+        } else {                               // colapso hasta desaparecer
+            var q = (m - 0.28) / 0.72;
+            radius = bigR * Math.pow(1.0 - q, 1.6);
+            fade = 1.0 - 0.5 * q;
+        }
+        drawBurst(dc, cx, cy, meet, radius, fade);
     }
 
     //! Día de la semana en 3 letras (verde), arriba, centrado.

@@ -16,12 +16,12 @@ OUT = os.path.join(_HERE, "preview.png")
 S, K = 454, 4                       # tamano real y factor de supermuestreo
 
 # Mismos valores que el .mc
-BG    = (0xF7, 0xC8, 0x1E)
-TICK  = (0x70, 0x52, 0x00)
-INK   = (0x18, 0x1A, 0x1A)
-BEVEL = (0x34, 0x35, 0x36)
-SHADE = (0xC9, 0xA1, 0x00)
-PIVOT = (0x3A, 0x3B, 0x3C)
+BG     = (0, 0, 0)
+TICK   = (0x7A, 0x5E, 0x10)
+TICK_Q = (0xC9, 0xA2, 0x1E)
+INK    = (0xF7, 0xC8, 0x1E)
+BEVEL  = (0xFF, 0xE4, 0x9A)
+PIVOT  = (0xFF, 0xF0, 0xC4)
 AOD   = (0xF7, 0xC8, 0x1E)
 AOD_T = (0x4A, 0x3A, 0x00)
 
@@ -34,7 +34,6 @@ TICK_W_Q, TICK_W = 26, 17
 TICK_W_Q_AOD, TICK_W_AOD = 16, 11
 TICK_R_IN_Q, TICK_R_IN, TICK_R_OUT = 0.775, 0.855, 0.955
 R_DISC, R_PIVOT = 27, 5
-SHADE_X, SHADE_Y = 2, 3
 
 
 def hand_points(cx, cy, deg, length, spec, dx=0, dy=0):
@@ -61,7 +60,7 @@ def draw_hand(d, cx, cy, deg, length, spec):
     d.polygon([pts[0], pts[1], pts[2], b], fill=BEVEL)
 
 
-def draw_ticks(d, cx, cy, color, w_quarter, w_other):
+def draw_ticks(d, cx, cy, col_q, col_o, w_quarter, w_other):
     """Cada marca es un rectangulo, igual que en el .mc."""
     r = S * K / 2
     r2 = r * TICK_R_OUT
@@ -76,14 +75,14 @@ def draw_ticks(d, cx, cy, color, w_quarter, w_other):
         ox, oy = cx + ux * r2, cy + uy * r2
         d.polygon([(ix + px * hw, iy + py * hw), (ox + px * hw, oy + py * hw),
                    (ox - px * hw, oy - py * hw), (ix - px * hw, iy - py * hw)],
-                  fill=color)
+                  fill=(col_q if quarter else col_o))
 
 
 def draw_disc(d, cx, cy):
     n = 7
     for i in range(n):
         f = i / float(n - 1)
-        v = 0x56 + int((0x29 - 0x56) * f)
+        v = 0x5E + int((0x1C - 0x5E) * f)
         rr = R_DISC * K * (1.0 - i * 0.09)
         ox = -R_DISC * K * 0.10 * (1 - f)
         oy = -R_DISC * K * 0.13 * (1 - f)
@@ -101,15 +100,12 @@ def face(hh, mm, aod=False):
     if aod:
         cx = c + ((mm % 3) - 1) * 6 * K
         cy = c + (((mm // 3) % 3) - 1) * 6 * K
-        draw_ticks(d, cx, cy, AOD_T, TICK_W_Q_AOD, TICK_W_AOD)
+        draw_ticks(d, cx, cy, AOD_T, AOD_T, TICK_W_Q_AOD, TICK_W_AOD)
         d.polygon(hand_points(cx, cy, ha, L_HOUR, SPEC_HOUR), fill=AOD)
         d.polygon(hand_points(cx, cy, ma, L_MIN, SPEC_MIN), fill=AOD)
     else:
-        d.ellipse([0, 0, S * K - 1, S * K - 1], fill=BG)
-        draw_ticks(d, c, c, TICK, TICK_W_Q, TICK_W)
+        draw_ticks(d, c, c, TICK_Q, TICK, TICK_W_Q, TICK_W)
         draw_disc(d, c, c)
-        for deg, ln, sp in ((ha, L_HOUR, SPEC_HOUR), (ma, L_MIN, SPEC_MIN)):
-            d.polygon(hand_points(c, c, deg, ln, sp, SHADE_X * K, SHADE_Y * K), fill=SHADE)
         draw_hand(d, c, c, ha, L_HOUR, SPEC_HOUR)
         draw_hand(d, c, c, ma, L_MIN, SPEC_MIN)
         d.ellipse([c - R_PIVOT * K, c - R_PIVOT * K,

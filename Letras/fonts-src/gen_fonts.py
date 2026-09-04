@@ -27,15 +27,15 @@ WORD_CHARS = "ACDEHIMNOPRSTUVYZ"
 #   WordS -> las tres lineas grandes cuando VEINTICINCO obliga a usar 4
 #   Link  -> la linea del enlace (Y / MENOS / EN). Casi tan grande como
 #            las otras: 'y' frente a 'menos' son media hora de diferencia
-#   WordA/LinkA -> la version del Always-On, recortada para caber bajo el
-#            10% de pixeles encendidos. Llevado al maximo: 9,07% en el
-#            caso peor, que es DIEZ MENOS VEINTI CINCO
+#   WordA -> el Always-On entero, LAS TRES LINEAS AL MISMO CUERPO. Con el
+#            enlace mas pequeno que las otras dos costaba leerlo justo donde
+#            mas importa. Igualando a 68 el caso peor mide 9,31%, por debajo
+#            del techo del 10% de pixeles encendidos.
 JOBS = [
     ("Word",  "Barriecito-Regular.ttf", 116, WORD_CHARS, False),
     ("WordS", "Barriecito-Regular.ttf", 100, WORD_CHARS, False),
     ("Link",  "Barriecito-Regular.ttf", 100, WORD_CHARS, False),
-    ("WordA", "Barriecito-Regular.ttf", 72,  WORD_CHARS, False),
-    ("LinkA", "Barriecito-Regular.ttf", 50,  WORD_CHARS, False),
+    ("WordA", "Barriecito-Regular.ttf", 68,  WORD_CHARS, False),
 ]
 
 PAD = 2  # separación entre glifos en el atlas

@@ -21,3 +21,24 @@ ciclo completo cada 18 latidos), los orbes nacen blancos y divergen a rojos y
 azules, y el Always-On sigue siendo solo la hora.
 
 Ver `source/EpixWatchFaceView.mc`, función `dotRadius()`.
+
+## Dos correcciones sobre `Pulso/`
+
+**El choque va por delante de los textos.** Los dos puntos de encuentro son
+geométricamente simétricos, pero detrás de uno está `LUN` y detrás del otro
+`9 AGO`. Dibujado por debajo, el estallido de arriba y el de abajo salían
+recortados de forma muy distinta y no parecían el mismo efecto. Dibujado por
+encima son idénticos — y tapar la hora un segundo era justamente la intención
+del choque. El **viaje** sigue yendo por detrás: los orbes cruzan la hora sin
+taparla.
+
+**La estela mide el arco recorrido desde el fotograma anterior**, no un tiempo
+fijo de 1,5 s. Al levantar la muñeca el sistema encadena varios `onUpdate` muy
+seguidos: la cabeza avanzaba una pizca mientras la estela seguía midiendo 1,5 s,
+y el resultado era un borrón largo que apenas se movía. Se leía como «va lento y
+pastoso» hasta que el refresco se asentaba en uno por segundo. Ahora la estela
+cubre exactamente el paso de cada fotograma (por `TRAIL_OVERLAP` = 1,15, para
+que un trazo empalme con el siguiente), así que el movimiento se lee igual sea
+cual sea el ritmo de refresco.
+
+`Pulso/` conserva el comportamiento anterior en las dos cosas.

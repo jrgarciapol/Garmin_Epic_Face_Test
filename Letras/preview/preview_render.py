@@ -28,8 +28,7 @@ YA4 = (0.175, 0.385, 0.605, 0.825)
 F_WORD = ImageFont.truetype(TTF, 116)
 F_WORDS = ImageFont.truetype(TTF, 100)
 F_LINK = ImageFont.truetype(TTF, 100)
-F_WORDA = ImageFont.truetype(TTF, 72)
-F_LINKA = ImageFont.truetype(TTF, 50)
+F_WORDA = ImageFont.truetype(TTF, 68)   # las TRES lineas del AOD
 
 HORAS = ["DOCE", "UNA", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE",
          "OCHO", "NUEVE", "DIEZ", "ONCE"]
@@ -70,11 +69,11 @@ def face(hh, mm, aod=False):
         cx = S // 2 + ((mm % 3) - 1) * 7
         dy = (((mm // 3) % 3) - 1) * 7
         if mi == "VEINTICINCO":
-            rows = [(h, F_WORDA, YA4[0], C_HOUR), (lk, F_LINKA, YA4[1], C_LINK),
+            rows = [(h, F_WORDA, YA4[0], C_HOUR), (lk, F_WORDA, YA4[1], C_LINK),
                     ("VEINTI", F_WORDA, YA4[2], C_MIN),
                     ("CINCO", F_WORDA, YA4[3], C_MIN)]
         else:
-            rows = [(h, F_WORDA, YA3[0], C_HOUR), (lk, F_LINKA, YA3[1], C_LINK),
+            rows = [(h, F_WORDA, YA3[0], C_HOUR), (lk, F_WORDA, YA3[1], C_LINK),
                     (mi, F_WORDA, YA3[2], C_MIN)]
         for txt, f, y, col in rows:
             d.text((cx, int(S * y) + dy), txt, font=f, fill=col, anchor="mm")

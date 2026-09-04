@@ -6,5 +6,4 @@
     <font id="WordS" filename="WordS.fnt" antialias="true"/>
     <font id="Link"  filename="Link.fnt"  antialias="true"/>
     <font id="WordA" filename="WordA.fnt" antialias="true"/>
-    <font id="LinkA" filename="LinkA.fnt" antialias="true"/>
 </fonts>

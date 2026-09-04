@@ -50,7 +50,7 @@ líneas. Es corte silábico válido (vein-ti-cin-co).
 ## Fuentes
 
 Connect IQ **no sabe escalar una fuente en ejecución**: cada cuerpo de letra es
-un atlas BMFont propio. Por eso hay cinco y solo cinco, generados por
+un atlas BMFont propio. Por eso hay cuatro y solo cuatro, generados por
 `fonts-src/gen_fonts.py`:
 
 | Id | Cuerpo | Para qué |
@@ -58,16 +58,17 @@ un atlas BMFont propio. Por eso hay cinco y solo cinco, generados por
 | `Word`  | 116 | Las dos líneas grandes cuando la frase cabe en tres |
 | `WordS` | 100 | Las tres líneas grandes cuando VEINTICINCO obliga a cuatro |
 | `Link`  | 100 | La línea del enlace (Y / MENOS / EN) |
-| `WordA` | 72  | Always-On |
-| `LinkA` | 50  | Always-On, enlace |
+| `WordA` | 68  | Always-On, **las tres líneas** |
 
 Solo hacen falta **17 letras** (`ACDEHIMNOPRSTUVYZ`), las que aparecen en las
 veinte palabras del sistema, así que los atlas son diminutos.
 
 ## Always-On
 
-Llevado al máximo que permite el techo del **10%** de píxeles encendidos: el
-caso peor es `3:35` (CUATRO MENOS VEINTI CINCO) y mide **9,05%**.
+**Las tres líneas van al mismo cuerpo.** Tenerlas a distinto tamaño hacía que
+el enlace —la palabra más informativa— fuera además la menos legible. Igualadas
+a 68, el caso peor es `3:35` (CUATRO MENOS VEINTI CINCO) y mide **9,28%**, por
+debajo del techo del **10%** de píxeles encendidos.
 
 Para poder subir el cuerpo hasta ahí, en reposo **también se parte
 VEINTICINCO**: con la palabra entera el ancho manda y hay que quedarse mucho

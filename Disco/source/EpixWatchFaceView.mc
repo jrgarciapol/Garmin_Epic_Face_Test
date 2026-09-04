@@ -5,17 +5,20 @@ using Toybox.Time as Time;
 using Toybox.Time.Gregorian as Calendar;
 
 //! Esfera ANALÓGICA minimalista para el Epix Pro 51 mm (454 x 454, AMOLED).
-//! Portada de un reloj de disco: fondo ámbar liso, doce marcas discretas, dos
-//! agujas afiladas que nacen anchas en la cola y acaban en punta, un disco
-//! central oscuro y un pivote. Sin cifras, sin fecha y sin segundero.
+//! Portada de un reloj de disco sobre NEGRO: doce marcas, dos agujas afiladas
+//! que nacen anchas en la cola y acaban en punta, un disco central y un
+//! pivote. Sin cifras, sin fecha y sin segundero.
 //!
-//!   INTERACTIVA: fondo ámbar, agujas casi negras con su sombra desplazada y
-//!   un bisel más claro en una de sus mitades (es lo que les da volumen sin
-//!   degradados, que Monkey C no tiene).
+//! El diseño original tenía el fondo claro. Se invirtió porque un fondo claro
+//! enciende el 100% de la pantalla: era imposible en Always-On (techo del 10%)
+//! y obligaba a que la esfera pasara de blanco a negro cada vez que bajas la
+//! muñeca. Con el ámbar en la tinta, reposo e interactiva son la misma imagen.
 //!
-//!   ALWAYS-ON: el fondo ámbar encendería el 100% de la pantalla y el límite
-//!   son el 10% de píxeles, así que en reposo se INVIERTE: fondo negro y las
-//!   mismas agujas en ámbar. Ronda el 1%, de sobra.
+//!   INTERACTIVA: agujas en ámbar con un bisel más claro en una de sus
+//!   mitades, que es lo que les da volumen sin degradados (Monkey C no los
+//!   tiene). Sobre negro no se dibuja sombra: sería invisible.
+//!
+//!   ALWAYS-ON: lo mismo, atenuado y con las agujas algo más finas de efecto.
 //!
 //! El minutero se recalcula cada segundo (avanza 0,1°/s, imperceptible), así
 //! que nunca va atrasado respecto al minuto en curso.
@@ -25,13 +28,18 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private var mIsAwake = true;
 
     // ---- Paleta ----
-    private const COLOR_BG    = 0xF7C81E; // ámbar (fondo, despierto)
-    private const COLOR_TICK  = 0x705200; // marcas horarias sobre el ámbar
-    private const COLOR_INK   = 0x181A1A; // cuerpo de las agujas
-    private const COLOR_BEVEL = 0x343536; // bisel: media aguja, más clara
-    private const COLOR_SHADE = 0xC9A100; // sombra proyectada sobre el ámbar
-    private const COLOR_PIVOT = 0x3A3B3C;
-    private const COLOR_AOD   = 0xF7C81E; // agujas en reposo, sobre negro
+    // Invertida respecto al diseño original: el ámbar pasa del fondo a la
+    // tinta. Un fondo claro encendería el 100% de la pantalla, así que era
+    // imposible en reposo y obligaba a que la esfera cambiara de blanco a
+    // negro cada vez que bajas la muñeca. Así, Always-On e interactiva son la
+    // misma imagen con distinto brillo, y el AMOLED gasta lo mínimo.
+    private const COLOR_BG    = Gfx.COLOR_BLACK;
+    private const COLOR_TICK  = 0x7A5E10; // las ocho marcas menores
+    private const COLOR_TICK_Q= 0xC9A21E; // 12, 3, 6 y 9: más vivas
+    private const COLOR_INK   = 0xF7C81E; // cuerpo de las agujas, ámbar
+    private const COLOR_BEVEL = 0xFFE49A; // bisel: media aguja, más clara
+    private const COLOR_PIVOT = 0xFFF0C4;
+    private const COLOR_AOD   = 0xF7C81E; // agujas en reposo
     private const COLOR_AOD_T = 0x4A3A00; // marcas en reposo (tenues)
 
     // ---- Geometría, tomada del diseño original (SVG 70x100) y escalada ----
@@ -40,8 +48,6 @@ class EpixWatchFaceView extends Ui.WatchFace {
     private const TAIL    = 34;   // cola por detrás del pivote
     private const R_DISC  = 27;   // disco central
     private const R_PIVOT = 5;
-    private const SHADE_X = 2;    // desplazamiento de la sombra
-    private const SHADE_Y = 3;
 
     // ---- Forma de la aguja: cuerpo ancho y punta de lanza ----
     // El diseño original estrecha en línea recta desde la cola hasta la punta,
@@ -104,19 +110,15 @@ class EpixWatchFaceView extends Ui.WatchFace {
         dc.setColor(COLOR_BG, COLOR_BG);
         dc.clear();
 
-        drawTicks(dc, cx, cy, COLOR_TICK, TICK_W_Q, TICK_W);
+        drawTicks(dc, cx, cy, COLOR_TICK_Q, COLOR_TICK, TICK_W_Q, TICK_W);
         drawDisc(dc, cx, cy);
 
         var ha = hourAngle(now);
         var ma = minuteAngle(now);
 
-        // Primero las dos sombras, luego los dos cuerpos: así la sombra del
-        // minutero no cae por encima del horario.
-        fillHand(dc, cx, cy, ha, L_HOUR, W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR,
-                 COLOR_SHADE, SHADE_X, SHADE_Y);
-        fillHand(dc, cx, cy, ma, L_MIN, W_MIN_TAIL, W_MIN_BODY, K_SH_MIN,
-                 COLOR_SHADE, SHADE_X, SHADE_Y);
-
+        // Sobre negro no hay sombra que valga: una copia desplazada de la
+        // aguja en un tono más oscuro sería invisible. Lo que da volumen aquí
+        // es solo el bisel.
         drawHand(dc, cx, cy, ha, L_HOUR, W_HOUR_TAIL, W_HOUR_BODY, K_SH_HOUR);
         drawHand(dc, cx, cy, ma, L_MIN,  W_MIN_TAIL,  W_MIN_BODY,  K_SH_MIN);
 
@@ -136,7 +138,7 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var cx = dc.getWidth() / 2 + ((now.min % 3) - 1) * shift;
         var cy = dc.getHeight() / 2 + (((now.min / 3) % 3) - 1) * shift;
 
-        drawTicks(dc, cx, cy, COLOR_AOD_T, TICK_W_Q_AOD, TICK_W_AOD);
+        drawTicks(dc, cx, cy, COLOR_AOD_T, COLOR_AOD_T, TICK_W_Q_AOD, TICK_W_AOD);
 
         var ha = hourAngle(now);
         var ma = minuteAngle(now);
@@ -164,10 +166,9 @@ class EpixWatchFaceView extends Ui.WatchFace {
     //! A estos grosores no vale `drawLine` con pincel ancho: el remate de la
     //! línea depende del dispositivo y a 26 px se nota. Cada marca es un
     //! rectángulo (`fillPolygon`), igual que las agujas.
-    private function drawTicks(dc, cx, cy, color, wQuarter, wOther) {
+    private function drawTicks(dc, cx, cy, colQuarter, colOther, wQuarter, wOther) {
         var r = dc.getWidth() / 2;
         var r2 = r * TICK_R_OUT;
-        dc.setColor(color, Gfx.COLOR_TRANSPARENT);
         for (var i = 0; i < 12; i += 1) {
             var a = Math.toRadians(i * 30 - 90);
             var ux = Math.cos(a);
@@ -177,6 +178,7 @@ class EpixWatchFaceView extends Ui.WatchFace {
             var quarter = (i % 3 == 0);
             var r1 = r * (quarter ? TICK_R_IN_Q : TICK_R_IN);
             var hw = (quarter ? wQuarter : wOther) / 2.0;
+            dc.setColor(quarter ? colQuarter : colOther, Gfx.COLOR_TRANSPARENT);
             var ix = cx + ux * r1;
             var iy = cy + uy * r1;
             var ox = cx + ux * r2;
@@ -197,7 +199,7 @@ class EpixWatchFaceView extends Ui.WatchFace {
         var n = 7;
         for (var i = 0; i < n; i += 1) {
             var f = i * 1.0 / (n - 1);
-            var v = 0x56 + ((0x29 - 0x56) * f).toNumber();   // de 0x56 a 0x29
+            var v = 0x5E + ((0x1C - 0x5E) * f).toNumber();   // de 0x5E a 0x1C
             dc.setColor((v << 16) | ((v + 1) << 8) | (v + 2), Gfx.COLOR_TRANSPARENT);
             var rr = (R_DISC * (1.0 - i * 0.09)).toNumber();
             var ox = (-R_DISC * 0.10 * (1 - f)).toNumber();
@@ -228,12 +230,6 @@ class EpixWatchFaceView extends Ui.WatchFace {
             [(bx - px * ht + dx).toNumber(),     (by - py * ht + dy).toNumber()],
             [(sx - px * hb + dx).toNumber(),     (sy - py * hb + dy).toNumber()]
         ];
-    }
-
-    //! Aguja de un solo color (se usa para la sombra y para el Always-On).
-    private function fillHand(dc, cx, cy, deg, length, wTail, wBody, kSh, color, dx, dy) {
-        dc.setColor(color, Gfx.COLOR_TRANSPARENT);
-        dc.fillPolygon(handPoints(cx, cy, deg, length, wTail, wBody, kSh, dx, dy));
     }
 
     //! Aguja completa: cuerpo oscuro y, encima, la mitad que da a la luz en un
