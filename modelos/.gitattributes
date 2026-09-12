@@ -1,0 +1,5 @@
+# Los modelos son binarios: que git no intente hacer diffs ni tocar finales de línea.
+*.fbx binary
+*.glb binary
+*.gltf binary
+*.blend binary
