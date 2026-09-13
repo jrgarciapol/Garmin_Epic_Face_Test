@@ -18,17 +18,27 @@ tinta, que en el reloj era inviable, aquí es justo la que toca.
 
 ## Cómo se usa
 
+Desde **esta carpeta** (`Sobremesa/`), una sola vez:
+
 ```sh
 pip install -r requirements.txt
-
-python3 reloj.py                          # pantalla completa
-python3 reloj.py --ventana                # en una ventana de 800
-python3 reloj.py --lamina prueba.png --hora 10:09:38
-python3 reloj.py --lamina hoja.png --hora 10:09 1:50 6:30 8:20
 ```
 
+Y ya:
+
+```sh
+python -m reloj                          # pantalla completa
+python -m reloj --ventana                # en una ventana de 800
+python -m reloj --lamina prueba.png --hora 10:09:38
+python -m reloj --lamina hoja.png --hora 10:09 1:50 6:30 8:20
+```
+
+En Windows hay `run.bat`, que abre la ventana sin escribir nada. En Linux y en
+la Pi, `python3` en vez de `python`.
+
 Con `--lamina` no abre pantalla ni toca SDL: compone con Pillow y guarda un
-PNG. Sirve para trabajar el diseño sin tener la Pi delante.
+PNG. Sirve para trabajar el diseño sin tener la Pi delante — y sin la Pi
+siquiera.
 
 `Esc` o `q` para salir.
 
