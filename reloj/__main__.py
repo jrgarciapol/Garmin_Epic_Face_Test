@@ -1,19 +1,18 @@
-#!/usr/bin/env python3
 """Reloj de sobremesa / pared.
 
-    python3 reloj.py                        pantalla completa
-    python3 reloj.py --ventana              en una ventana de 800
-    python3 reloj.py --esfera disco
-    python3 reloj.py --lamina prueba.png --hora 10:09:30
-    python3 reloj.py --lamina hoja.png --hora 10:09 1:50 6:30 8:20
+    python -m reloj                        pantalla completa
+    python -m reloj --ventana              en una ventana de 800
+    python -m reloj --esfera disco
+    python -m reloj --lamina prueba.png --hora 10:09:30
+    python -m reloj --lamina hoja.png --hora 10:09 1:50 6:30 8:20
 
 Con `--lamina` no hace falta pantalla ni SDL: compone con Pillow y guarda.
 """
 
 import argparse
 
-from reloj import lamina
-from reloj.esferas import DISPONIBLES, cargar
+from . import lamina
+from .esferas import DISPONIBLES, cargar
 
 
 def main():
@@ -42,7 +41,7 @@ def main():
         print("%s  (%dx%d)" % (a.lamina, im.width, im.height))
         return
 
-    from reloj import pantalla
+    from . import pantalla
     pantalla.correr(esfera, lado=a.lado, ventana=a.ventana, fps=a.fps)
 
 
