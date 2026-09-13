@@ -127,6 +127,16 @@ enlace se distingue por el tono sin perder legibilidad.
 doble de larga que el resto. El Always-On va al máximo que permite el techo del
 10% de píxeles: 9,28% en el caso peor. Detalle en `Letras/README.md`.
 
+## Rama de sobremesa
+
+La línea de **relojes para pantalla grande** —los mismos diseños llevados a un
+monitor movido por una Raspberry Pi— se ha separado a su propio repositorio:
+**[RelojSobremesa](https://github.com/jrgarciapol/RelojSobremesa)**. Va en
+Python con SDL2, y allí las restricciones se invierten: 60 fps, sin techo de
+píxeles encendidos y con rotación de mapas de bits, que aquí no existe.
+
+Este repositorio sigue siendo **la fuente** de esos ports.
+
 ## Cómo compilar una
 
 Abre en VS Code la **subcarpeta** de la fuente que quieras (no la raíz) y usa
